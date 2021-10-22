@@ -4,13 +4,14 @@ import (
 	"crypto/md5"
 	"crypto/tls"
 	"fmt"
-	"freedomGo/config"
-	"freedomGo/utils"
 	"io"
 	"net"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/nicennnnnnnlee/freedomGo/config"
+	"github.com/nicennnnnnnlee/freedomGo/utils"
 )
 
 var (

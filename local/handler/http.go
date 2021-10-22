@@ -1,11 +1,12 @@
 package handler
 
 import (
-	"freedomGo/config"
-	"freedomGo/utils"
 	"io"
 	"net"
 	"regexp"
+
+	"github.com/nicennnnnnnlee/freedomGo/config"
+	"github.com/nicennnnnnnlee/freedomGo/utils"
 )
 
 const (

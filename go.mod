@@ -1,4 +1,4 @@
-module freedomGo
+module github.com/nicennnnnnnlee/freedomGo
 
 go 1.17
 

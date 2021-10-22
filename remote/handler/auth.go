@@ -3,13 +3,14 @@ package handler
 import (
 	"crypto/md5"
 	"fmt"
-	"freedomGo/config"
-	"freedomGo/utils"
 	"io"
 	"net"
 	"regexp"
 	"strconv"
 	"time"
+
+	"github.com/nicennnnnnnlee/freedomGo/config"
+	"github.com/nicennnnnnnlee/freedomGo/utils"
 )
 
 var (

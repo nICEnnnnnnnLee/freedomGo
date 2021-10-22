@@ -75,9 +75,9 @@ func ReadHeader(conn net.Conn) (string, error) {
 	for len(result) < 1024*5 {
 		size, err := conn.Read(buffer)
 		if err != nil {
-			res := string(result)
-			log.Println("utils.ReadHeader: ", res)
-			return res, err
+			// res := string(result)
+			// log.Println("utils.ReadHeader: ", res)
+			return "", err
 		}
 		result = append(result, buffer[0:size]...)
 		str := string(result)

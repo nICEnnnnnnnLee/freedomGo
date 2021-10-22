@@ -2,10 +2,11 @@ package local
 
 import (
 	"fmt"
-	"freedomGo/config"
-	"freedomGo/local/handler"
-	"freedomGo/utils"
 	"net"
+
+	"github.com/nicennnnnnnlee/freedomGo/config"
+	"github.com/nicennnnnnnlee/freedomGo/local/handler"
+	"github.com/nicennnnnnnlee/freedomGo/utils"
 )
 
 func handleClient(conn net.Conn, conf *config.Local) {

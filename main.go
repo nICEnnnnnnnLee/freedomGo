@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"freedomGo/config"
-	"freedomGo/local"
-	"freedomGo/remote"
 	"io/ioutil"
 	"log"
+
+	"github.com/nicennnnnnnlee/freedomGo/config"
+	"github.com/nicennnnnnnlee/freedomGo/local"
+	"github.com/nicennnnnnnlee/freedomGo/remote"
 
 	"gopkg.in/yaml.v2"
 )

@@ -3,11 +3,12 @@ package remote
 import (
 	"crypto/tls"
 	"fmt"
-	"freedomGo/config"
-	"freedomGo/remote/handler"
-	"freedomGo/utils"
 	"io"
 	"net"
+
+	"github.com/nicennnnnnnlee/freedomGo/config"
+	"github.com/nicennnnnnnlee/freedomGo/remote/handler"
+	"github.com/nicennnnnnnlee/freedomGo/utils"
 )
 
 const (
