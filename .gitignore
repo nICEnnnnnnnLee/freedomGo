@@ -1,0 +1,8 @@
+.classpath
+.project
+.settings
+release/
+bin/
+freedomGo
+freedomGo.exe
+conf.*.yaml
