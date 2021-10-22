@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/nicennnnnnnlee/freedomGo/config"
+	"github.com/nicennnnnnnlee/freedomGo/local/config"
 	"github.com/nicennnnnnnlee/freedomGo/local/handler"
 	"github.com/nicennnnnnnlee/freedomGo/utils"
 )

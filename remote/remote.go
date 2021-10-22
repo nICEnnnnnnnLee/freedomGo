@@ -6,7 +6,7 @@ import (
 	"io"
 	"net"
 
-	"github.com/nicennnnnnnlee/freedomGo/config"
+	"github.com/nicennnnnnnlee/freedomGo/remote/config"
 	"github.com/nicennnnnnnlee/freedomGo/remote/handler"
 	"github.com/nicennnnnnnlee/freedomGo/utils"
 )

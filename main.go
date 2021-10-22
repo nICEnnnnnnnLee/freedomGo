@@ -6,9 +6,10 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/nicennnnnnnlee/freedomGo/config"
 	"github.com/nicennnnnnnlee/freedomGo/local"
+	lconf "github.com/nicennnnnnnlee/freedomGo/local/config"
 	"github.com/nicennnnnnnlee/freedomGo/remote"
+	rconf "github.com/nicennnnnnnlee/freedomGo/remote/config"
 
 	"gopkg.in/yaml.v2"
 )
@@ -33,7 +34,7 @@ func main() {
 }
 
 func startLocalService(path string) {
-	var conf config.Local
+	var conf lconf.Local
 	// out, _ := yaml.Marshal(config.New())
 	// fmt.Println(string(out))
 
@@ -51,7 +52,7 @@ func startLocalService(path string) {
 }
 
 func startRemoteService(path string) {
-	var conf config.Remote
+	var conf rconf.Remote
 	// out, _ := yaml.Marshal(config.NewRemote())
 	// fmt.Println(string(out))
 
