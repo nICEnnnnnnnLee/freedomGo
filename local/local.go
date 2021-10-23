@@ -2,6 +2,7 @@ package local
 
 import (
 	"fmt"
+	"log"
 	"net"
 
 	"github.com/nicennnnnnnlee/freedomGo/local/config"
@@ -12,7 +13,15 @@ import (
 func handleClient(conn net.Conn, conf *config.Local) {
 	defer conn.Close()
 	defer utils.HandleError()
-	handler.HandleHttp(conn, conf)
+	switch conf.ProxyType {
+	case config.HTTP:
+		handler.HandleHttp(conn, conf)
+	case config.SOCKS5:
+		handler.HandleSocks5(conn, conf)
+	default:
+		log.Fatalf("ProxyType 只能是%s 或 %s, 当前为 %s\n", config.HTTP, config.SOCKS5, conf.ProxyType)
+	}
+	//
 }
 
 func Start(conf *config.Local) {

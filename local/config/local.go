@@ -1,6 +1,12 @@
 package config
 
+const (
+	SOCKS5 = "socks5"
+	HTTP   = "http"
+)
+
 type Local struct {
+	ProxyType     string `yaml:"ProxyType"`
 	BindHost      string `yaml:"BindHost"`
 	BindPort      uint16 `yaml:"BindPort"`
 	RemoteHost    string `yaml:"RemoteHost"`
