@@ -1,0 +1,10 @@
+BindHost: 127.0.0.1 
+BindPort: 443 
+Salt: salt
+UseSSL: false
+# SNI: www.baidu.com
+# CertPath: data/fullchain.pem
+# KeyPath: data/n1ce.top.key
+Users:
+  user1: pwd1 
+  username: pwd
