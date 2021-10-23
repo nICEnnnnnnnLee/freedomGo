@@ -28,7 +28,7 @@ func Make403Response(conn net.Conn) {
 func handleClient(conn net.Conn, conf *config.Remote, tlsConf *tls.Config) {
 	defer conn.Close()
 	defer utils.HandleError()
-
+	// log.Println("tcp conn established...")
 	if conf.UseSSL {
 		conn = tls.Server(conn, tlsConf)
 	}
@@ -38,11 +38,12 @@ func handleClient(conn net.Conn, conf *config.Remote, tlsConf *tls.Config) {
 		panic(utils.ErrAuthHeaderNotRight)
 	}
 	// log.Println("auth header received...")
-	conn2server := handler.GetAuthorizedConn(authRecv, conf)
-	if conn2server == nil {
+	remoteAddr := handler.GetRemoteAddr(authRecv, conf)
+	if remoteAddr == nil {
 		Make403Response(conn)
 	} else {
 		Make101Response(conn)
+		conn2server := handler.GetRemoteConn(remoteAddr, conf)
 		go utils.Pip(conn, conn2server)
 		utils.Pip(conn2server, conn)
 	}
