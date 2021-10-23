@@ -1,0 +1,29 @@
+# socks5 http
+ProxyType: http
+BindHost: 127.0.0.1 
+BindPort: 1081
+# 按域名分流将下面注释去掉即可
+# 全局代理将下面注释掉即可
+# GeoDomain:
+#   # 如果不匹配分流规则，那么就直连?
+#   DirectIfNotInRules: true
+#   # 同https://github.com/gfwlist/gfwlist
+#   GfwPath: data/gfwlist.txt
+#   # 将直连域名直接写入即可，每行一个
+#   DirectPath: data/direct_domains.txt
+
+# 该值可以是ip或者域名
+RemoteHost: 127.0.0.1
+RemotePort: 443
+# 和远端的连接是否经过TLS加密
+RemoteSSL: false
+Salt: salt
+Username: username
+Password: pwd
+# 是否允许不安全的HTTPS连接
+AllowInsecure: true
+# 模拟的HTTP请求
+HttpPath: /
+# 如果连接是经过加密的,该值还是Client Hello消息里面的SNI
+HttpDomain: www.baidu.com
+HttpUserAgent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0

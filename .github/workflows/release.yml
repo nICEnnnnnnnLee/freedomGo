@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      # Trigger only when src/** changes
+      - ".github/release.json"
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+   
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+    - run: make -j build
+     
+    - name: Read tag_latest
+      id: tag_latest
+      uses:  ashley-taylor/read-json-property-action@v1.0
+      with:
+        path: ./.github/release.json
+        property: tag_latest
+        
+    - name: Read description
+      id: description
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: ./.github/release.info
+ 
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{steps.tag_latest.outputs.value}}
+        release_name: FreedomGo - v${{steps.tag_latest.outputs.value}}
+        body: |
+          ${{steps.description.outputs.content}}
+        draft: false
+        prerelease: false
+    
+    - run: make -j upload
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_RELEASE_UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}

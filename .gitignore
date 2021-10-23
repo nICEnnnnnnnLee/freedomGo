@@ -1,0 +1,11 @@
+.classpath
+.project
+.settings
+release/
+bin/
+data/
+*.code-workspace
+tips.txt
+freedomGo
+freedomGo.*
+conf.*.yaml
