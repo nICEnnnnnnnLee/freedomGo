@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"runtime/debug"
 	"strings"
 )
 
@@ -32,7 +33,9 @@ func HandleError() {
 		case *net.OpError:
 			return
 		default:
-			panic(err)
+			log.Println(err)
+			log.Println(string(debug.Stack()))
+			// panic(err)
 		}
 	}
 }
