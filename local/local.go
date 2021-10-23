@@ -8,6 +8,7 @@ import (
 	"github.com/nicennnnnnnlee/freedomGo/local/config"
 	"github.com/nicennnnnnnlee/freedomGo/local/handler"
 	"github.com/nicennnnnnnlee/freedomGo/utils"
+	"github.com/nicennnnnnnlee/freedomGo/utils/geo"
 )
 
 func handleClient(conn net.Conn, conf *config.Local) {
@@ -25,7 +26,7 @@ func handleClient(conn net.Conn, conf *config.Local) {
 }
 
 func Start(conf *config.Local) {
-
+	initGeoConfig(conf)
 	fmt.Println("服务器开始监听...")
 	addr := fmt.Sprintf("%s:%d", conf.BindHost, conf.BindPort)
 	listen, err := net.Listen("tcp", addr)
@@ -43,4 +44,13 @@ func Start(conf *config.Local) {
 			go handleClient(conn, conf)
 		}
 	}
+}
+
+func initGeoConfig(conf *config.Local) {
+	geoConf := conf.GeoDomain
+	if geoConf == nil {
+		return
+	}
+	geo.InitProxySet(geoConf.GfwPath)
+	geo.InitDirectSet(geoConf.DirectPath)
 }

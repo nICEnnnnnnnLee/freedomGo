@@ -3,6 +3,8 @@
 .settings
 release/
 bin/
+data/
+tips.txt
 freedomGo
-freedomGo.exe
+freedomGo.*
 conf.*.yaml

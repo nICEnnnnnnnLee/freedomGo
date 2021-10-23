@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"fmt"
 	"io"
 	"net"
 	"regexp"
 
 	"github.com/nicennnnnnnlee/freedomGo/local/config"
 	"github.com/nicennnnnnnlee/freedomGo/utils"
+	"github.com/nicennnnnnnlee/freedomGo/utils/geo"
 )
 
 const (
@@ -28,7 +30,7 @@ func HandleHttp(conn net.Conn, conf *config.Local) {
 		port = "80"
 	}
 
-	conn2server := GetAuthorizedConn(host, port, conf)
+	conn2server := getRightConn(host, port, conf)
 	if head == "CONNECT" {
 		io.WriteString(conn, HttpsProxyEstablished)
 		// conn.Write([]byte(HttpsProxyEstablished))
@@ -41,4 +43,26 @@ func HandleHttp(conn net.Conn, conf *config.Local) {
 	go utils.Pip(conn, conn2server)
 	utils.Pip(conn2server, conn)
 	// time.Sleep(time.Second * 60)
+}
+
+func getRightConn(host string, port string, conf *config.Local) net.Conn {
+	if conf.GeoDomain != nil {
+		r := geo.IsDirect(host)
+		if (r == nil && conf.GeoDomain.DirectIfNotInRules) ||
+			(r != nil && *r) {
+			// log.Printf("直连 %s: %s\n", host, port)
+			return getDirectConn(host, port)
+		}
+	}
+	// log.Printf("走代理 %s: %s\n", host, port)
+	return GetAuthorizedConn(host, port, conf)
+}
+
+func getDirectConn(host string, port string) net.Conn {
+	remoteAddr := fmt.Sprintf("%s:%s", host, port)
+	conn2server, err := net.Dial("tcp", remoteAddr)
+	if err != nil {
+		panic(err)
+	}
+	return conn2server
 }
