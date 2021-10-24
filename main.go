@@ -14,11 +14,21 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var (
+	version   = "Unknown"
+	buildTime = "Unknown"
+)
+
 func main() {
+	fmt.Println("FreedomGo")
+	fmt.Println("\tVersion:\t", version)
+	fmt.Println("\tBuildTime:\t", buildTime)
+
 	var typeOfApp string
 	var configPath string
-
+	flag.StringVar(&typeOfApp, "type", "local", "模式local/remote")
 	flag.StringVar(&typeOfApp, "t", "local", "模式local/remote")
+	flag.StringVar(&configPath, "config", "./conf.local.yaml", "配置文件路径")
 	flag.StringVar(&configPath, "c", "./conf.local.yaml", "配置文件路径")
 	flag.Parse()
 
@@ -28,6 +38,7 @@ func main() {
 	case "remote":
 		startRemoteService(configPath)
 	default:
+		flag.Usage()
 		fmt.Println("仅支持local或remote模式")
 	}
 

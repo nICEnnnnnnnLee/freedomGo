@@ -23,8 +23,7 @@ var (
 	regTime     = regexp.MustCompile("my_time=([0-9]+)")
 )
 
-func GetAuthorizedConn(authRecv string, conf *config.Remote) net.Conn {
-
+func GetRemoteAddr(authRecv string, conf *config.Remote) *string {
 	matches := regCookie.FindStringSubmatch(authRecv)
 	if matches == nil {
 		panic(utils.ErrHeaderNotRight)
@@ -54,13 +53,15 @@ func GetAuthorizedConn(authRecv string, conf *config.Remote) net.Conn {
 		if exToken == token {
 			// log.Println("auth user valid...")
 			remoteAddr := domain + ":" + port
-			conn2server, err := net.Dial("tcp", remoteAddr)
-			if err != nil {
-				panic(err)
-			}
-
-			return conn2server
+			return &remoteAddr
 		}
 	}
 	return nil
+}
+func GetRemoteConn(remoteAddr *string, conf *config.Remote) net.Conn {
+	conn2server, err := net.Dial("tcp", *remoteAddr)
+	if err != nil {
+		panic(err)
+	}
+	return conn2server
 }

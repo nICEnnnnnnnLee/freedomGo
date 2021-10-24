@@ -1,6 +1,17 @@
+ifeq ($(LANG),)
+COMPILE_TIME = $(shell echo %date:~0,4%-%date:~5,2%-%date:~8,2%_%time:~0,2%:%time:~3,2%:%time:~6,2%)
+else
+COMPILE_TIME = $(shell date +"%Y-%m-%d_%H:%M:%S")
+endif
+
+ifeq ($(FREEDOM_VERSION),)
+FREEDOM_VERSION=Unknown
+endif
+
 NAME=freedomGo
 BINDIR=bin
-GOBUILD=CGO_ENABLED=0 go build -ldflags '-w -s -buildid='
+GOBUILD=CGO_ENABLED=0 go build -ldflags '-X main.version=$(FREEDOM_VERSION) -X main.buildTime=$(COMPILE_TIME) -w -s -buildid='
+# GOBUILD=CGO_ENABLED=0 go build -ldflags '-w -s -buildid='
 # The -w and -s flags reduce binary sizes by excluding unnecessary symbols and debug info
 # The -buildid= flag makes builds reproducible
 
