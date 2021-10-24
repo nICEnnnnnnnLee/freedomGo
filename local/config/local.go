@@ -1,5 +1,11 @@
 package config
 
+import (
+	"bytes"
+	"fmt"
+	"reflect"
+)
+
 const (
 	SOCKS5 = "socks5"
 	HTTP   = "http"
@@ -27,4 +33,40 @@ type GeoDomain struct {
 	DirectIfNotInRules bool   `yaml:"DirectIfNotInRules"`
 	GfwPath            string `yaml:"GfwPath"`
 	DirectPath         string `yaml:"DirectPath"`
+}
+
+func (local *Local) String() string {
+	// 如果为空，直接返回
+	if local == nil {
+		return "<nil>"
+	}
+	typ := reflect.TypeOf(local).Elem()
+	obj := reflect.ValueOf(local).Elem()
+	numField := typ.NumField()
+	buffer := bytes.NewBufferString("\n")
+	for i := 0; i < numField; i++ {
+		key := typ.Field(i).Name
+		value := obj.Field(i)
+		fmt.Fprintf(buffer, "%v:\t%v\n", key, value)
+		// fmt.Println(key, value)
+	}
+	return buffer.String()
+}
+
+func (geoDomain *GeoDomain) String() string {
+	// 如果为空，直接返回
+	if geoDomain == nil {
+		return "<nil>"
+	}
+	typ := reflect.TypeOf(geoDomain).Elem()
+	obj := reflect.ValueOf(geoDomain).Elem()
+	numField := typ.NumField()
+	buffer := bytes.NewBufferString("\n")
+	for i := 0; i < numField; i++ {
+		key := typ.Field(i).Name
+		value := obj.Field(i)
+		fmt.Fprintf(buffer, "\t%v:\t%v\n", key, value)
+		// fmt.Println(key, value)
+	}
+	return buffer.String()
 }

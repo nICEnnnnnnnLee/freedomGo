@@ -57,7 +57,7 @@ func startLocalService(path string) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Printf("%+v\n", conf)
+	fmt.Printf("%+v\n", &conf)
 
 	local.Start(&conf)
 }
@@ -75,7 +75,7 @@ func startRemoteService(path string) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(conf)
+	fmt.Println(&conf)
 
 	remote.Start(&conf)
 }
