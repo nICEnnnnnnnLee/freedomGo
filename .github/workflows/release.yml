@@ -17,7 +17,6 @@ jobs:
     - uses: actions/setup-go@v2
       with:
         go-version: 1.17
-    - run: make -j build
      
     - name: Read tag_latest
       id: tag_latest
@@ -25,6 +24,10 @@ jobs:
       with:
         path: ./.github/release.json
         property: tag_latest
+
+    - run: make -j build
+      env:
+        FREEDOM_VERSION: ${{ steps.tag_latest.outputs.value }}
         
     - name: Read description
       id: description
