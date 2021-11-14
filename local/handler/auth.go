@@ -62,6 +62,12 @@ func GetAuthorizedConn(host string, port string, conf *config.Local) net.Conn {
 		conn2server = tls.Client(conn2server, &tls.Config{
 			InsecureSkipVerify: conf.AllowInsecure,
 			ServerName:         conf.HttpDomain,
+			VerifyConnection: func(connState tls.ConnectionState) error {
+				if conf.AllowInsecure {
+					return nil
+				}
+				return connState.PeerCertificates[0].VerifyHostname(conf.HttpDomain)
+			},
 		})
 	}
 	// log.Println("remote TLS established...")

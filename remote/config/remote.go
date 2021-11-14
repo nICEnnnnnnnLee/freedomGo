@@ -1,5 +1,11 @@
 package config
 
+import (
+	"bytes"
+	"fmt"
+	"reflect"
+)
+
 type Remote struct {
 	BindHost      string            `yaml:"BindHost"`
 	BindPort      uint16            `yaml:"BindPort"`
@@ -24,3 +30,21 @@ type Remote struct {
 // 		Users:    users,
 // 	}
 // }
+
+func (remote *Remote) String() string {
+	// 如果为空，直接返回
+	if remote == nil {
+		return "<nil>"
+	}
+	typ := reflect.TypeOf(remote).Elem()
+	obj := reflect.ValueOf(remote).Elem()
+	numField := typ.NumField()
+	buffer := bytes.NewBufferString("\n")
+	for i := 0; i < numField; i++ {
+		key := typ.Field(i).Name
+		value := obj.Field(i)
+		fmt.Fprintf(buffer, "%v:\t%v\n", key, value)
+		// fmt.Println(key, value)
+	}
+	return buffer.String()
+}
