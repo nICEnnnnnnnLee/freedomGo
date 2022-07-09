@@ -15,8 +15,19 @@ GOBUILD=CGO_ENABLED=0 go build -ldflags '-X main.version=$(FREEDOM_VERSION) -X m
 # The -w and -s flags reduce binary sizes by excluding unnecessary symbols and debug info
 # The -buildid= flag makes builds reproducible
 
-all: linux-amd64 linux-386 macos-amd64 macos-arm64 win64 win32
+#SET CGO_ENABLED=0
+#SET GOOS=linux
+#SET GOARCH=amd64 
+#go build -ldflags ' -w -s -buildid='
 
+all: linux-amd64 linux-386 linux-arm linux-arm64 macos-amd64 macos-arm64 win64 win32
+
+linux-arm:
+	GOARCH=arm GOOS=linux $(GOBUILD) -o $(BINDIR)/$(NAME)-$@
+    
+linux-arm64:
+	GOARCH=arm64 GOOS=linux $(GOBUILD) -o $(BINDIR)/$(NAME)-$@
+    
 linux-amd64:
 	GOARCH=amd64 GOOS=linux $(GOBUILD) -o $(BINDIR)/$(NAME)-$@
 
@@ -53,12 +64,14 @@ test-win64:
 test-win32:
 	GOARCH=386 GOOS=windows go test
 
-build: linux-amd64 linux-386 macos-amd64 macos-arm64 win64 win32
+build: linux-amd64 linux-386 linux-arm linux-arm64 macos-amd64 macos-arm64 win64 win32
 	chmod +x $(BINDIR)/$(NAME)-*
 	# tar czf $(BINDIR)/$(NAME)-linux-amd64.tgz -C $(BINDIR) $(NAME)-linux-amd64
 	gzip $(BINDIR)/$(NAME)-linux-amd64
 	# tar czf $(BINDIR)/$(NAME)-linux-386.tgz -C $(BINDIR) $(NAME)-linux-386
 	gzip $(BINDIR)/$(NAME)-linux-386
+	gzip $(BINDIR)/$(NAME)-linux-arm
+	gzip $(BINDIR)/$(NAME)-linux-arm64
 	gzip $(BINDIR)/$(NAME)-macos-amd64
 	gzip $(BINDIR)/$(NAME)-macos-arm64
 	zip -m -j $(BINDIR)/$(NAME)-win32.zip $(BINDIR)/$(NAME)-win32.exe
@@ -73,6 +86,8 @@ GITHUB_UPLOAD_URL=$(shell echo $${GITHUB_RELEASE_UPLOAD_URL%\{*})
 upload:
 	curl -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/gzip" --data-binary @$(BINDIR)/$(NAME)-linux-386.gz  "$(GITHUB_UPLOAD_URL)?name=$(NAME)-linux-386.gz"
 	curl -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/gzip" --data-binary @$(BINDIR)/$(NAME)-linux-amd64.gz  "$(GITHUB_UPLOAD_URL)?name=$(NAME)-linux-amd64.gz"
+	curl -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/gzip" --data-binary @$(BINDIR)/$(NAME)-linux-arm.gz  "$(GITHUB_UPLOAD_URL)?name=$(NAME)-linux-arm.gz"
+	curl -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/gzip" --data-binary @$(BINDIR)/$(NAME)-linux-arm64.gz  "$(GITHUB_UPLOAD_URL)?name=$(NAME)-linux-arm64.gz"
 	curl -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/gzip" --data-binary @$(BINDIR)/$(NAME)-macos-amd64.gz  "$(GITHUB_UPLOAD_URL)?name=$(NAME)-macos-amd64.gz"
 	curl -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/gzip" --data-binary @$(BINDIR)/$(NAME)-macos-arm64.gz  "$(GITHUB_UPLOAD_URL)?name=$(NAME)-macos-arm64.gz"
 	curl -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/zip"  --data-binary @$(BINDIR)/$(NAME)-win64.zip "$(GITHUB_UPLOAD_URL)?name=$(NAME)-win64.zip"
