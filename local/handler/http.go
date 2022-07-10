@@ -51,16 +51,17 @@ func getRightConn(host string, port string, conf *config.Local) net.Conn {
 		if (r == nil && conf.GeoDomain.DirectIfNotInRules) ||
 			(r != nil && *r) {
 			// log.Printf("直连 %s: %s\n", host, port)
-			return getDirectConn(host, port)
+			return getDirectConn(host, port, conf)
 		}
 	}
 	// log.Printf("走代理 %s: %s\n", host, port)
 	return GetAuthorizedConn(host, port, conf)
 }
 
-func getDirectConn(host string, port string) net.Conn {
+func getDirectConn(host string, port string, conf *config.Local) net.Conn {
 	remoteAddr := fmt.Sprintf("%s:%s", host, port)
-	conn2server, err := net.Dial("tcp", remoteAddr)
+	// conn2server, err := net.Dial("tcp", remoteAddr)
+	conn2server, err := utils.DialTCP(remoteAddr, conf.DNSServer)
 	if err != nil {
 		panic(err)
 	}

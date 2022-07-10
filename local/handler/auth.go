@@ -53,7 +53,8 @@ func genHeader(conf *config.Local, domain string, port string) string {
 // 和Remote服务器建立连接，并进行鉴权处理
 func GetAuthorizedConn(host string, port string, conf *config.Local) net.Conn {
 	remoteAddr := fmt.Sprintf("%s:%d", conf.RemoteHost, conf.RemotePort)
-	conn2server, err := net.Dial("tcp", remoteAddr)
+	// conn2server, err := net.Dial("tcp", remoteAddr)
+	conn2server, err := utils.DialTCP(remoteAddr, conf.DNSServer)
 	if err != nil {
 		panic(err)
 	}

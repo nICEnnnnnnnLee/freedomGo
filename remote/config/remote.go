@@ -9,6 +9,7 @@ import (
 type Remote struct {
 	BindHost      string            `yaml:"BindHost"`
 	BindPort      uint16            `yaml:"BindPort"`
+	DNSServer     string            `yaml:"DNSServer"`
 	UseSSL        bool              `yaml:"UseSSL"`
 	SNI           string            `yaml:"SNI"`
 	CertPath      string            `yaml:"CertPath"`
