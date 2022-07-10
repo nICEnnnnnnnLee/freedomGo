@@ -59,7 +59,8 @@ func GetRemoteAddr(authRecv string, conf *config.Remote) *string {
 	return nil
 }
 func GetRemoteConn(remoteAddr *string, conf *config.Remote) net.Conn {
-	conn2server, err := net.Dial("tcp", *remoteAddr)
+	// conn2server, err := net.Dial("tcp", *remoteAddr)
+	conn2server, err := utils.DialTCP(*remoteAddr, conf.DNSServer)
 	if err != nil {
 		panic(err)
 	}

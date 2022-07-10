@@ -15,6 +15,7 @@ type Local struct {
 	ProxyType     string     `yaml:"ProxyType"`
 	BindHost      string     `yaml:"BindHost"`
 	BindPort      uint16     `yaml:"BindPort"`
+	DNSServer     string     `yaml:"DNSServer"`
 	RemoteHost    string     `yaml:"RemoteHost"`
 	RemotePort    uint16     `yaml:"RemotePort"`
 	RemoteSSL     bool       `yaml:"RemoteSSL"`

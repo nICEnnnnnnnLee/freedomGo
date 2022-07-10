@@ -1,6 +1,8 @@
 BindHost: 127.0.0.1 
 BindPort: 443 
 Salt: salt
+# 在非Window系统下生效,可为空
+#DNSServer: 8.8.8.8:53
 UseSSL: false
 # SNI: www.baidu.com
 # CertPath: data/fullchain.pem

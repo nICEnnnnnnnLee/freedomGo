@@ -47,6 +47,9 @@
 ProxyType: http
 BindHost: 127.0.0.1 
 BindPort: 1081
+# 在非Window系统下生效,可为空
+#DNSServer: 114.114.114.114:53
+
 # 按域名分流将下面注释去掉即可
 # 全局代理将下面注释掉即可
 # GeoDomain:
@@ -85,6 +88,8 @@ BindHost: 127.0.0.1
 BindPort: 443 
 Salt: salt
 UseSSL: false
+# 在非Window系统下生效,可为空
+#DNSServer: 8.8.8.8:53
 # SNI: www.baidu.com
 # CertPath: data/fullchain.pem
 # KeyPath: data/www.baidu.com.key
