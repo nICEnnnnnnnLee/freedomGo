@@ -1,5 +1,1 @@
-* 添加linux-arm linux-arm64编译, 可运行于Android Termux等环境
-* 添加dns server指定功能，防止某些情况下无法查询DNS导致TCP连接建立失败。  
-    例如，在Android Termux下，旧版本如需运行正常，需要程序具有`/etc/resolv.conf`的访问权限，并且nameserver被正确配置。  
-    要做到这一点，需要root权限，或者用`chroot/proot`重新定义根路径。  
-    现在，新版本只需要在配置里设置DNSServer即可(详情参见ReadMe)
+* 添加linux-s390x编译

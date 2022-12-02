@@ -31,6 +31,9 @@ linux-arm64:
 linux-amd64:
 	GOARCH=amd64 GOOS=linux $(GOBUILD) -o $(BINDIR)/$(NAME)-$@
 
+linux-s390x:
+	GOARCH=s390x GOOS=linux $(GOBUILD) -o $(BINDIR)/$(NAME)-$@
+    
 linux-386:
 	GOARCH=386 GOOS=linux $(GOBUILD) -o $(BINDIR)/$(NAME)-$@
 
@@ -64,11 +67,12 @@ test-win64:
 test-win32:
 	GOARCH=386 GOOS=windows go test
 
-build: linux-amd64 linux-386 linux-arm linux-arm64 macos-amd64 macos-arm64 win64 win32
+build: linux-amd64 linux-386 linux-s390x linux-arm linux-arm64 macos-amd64 macos-arm64 win64 win32
 	chmod +x $(BINDIR)/$(NAME)-*
 	# tar czf $(BINDIR)/$(NAME)-linux-amd64.tgz -C $(BINDIR) $(NAME)-linux-amd64
 	gzip $(BINDIR)/$(NAME)-linux-amd64
 	# tar czf $(BINDIR)/$(NAME)-linux-386.tgz -C $(BINDIR) $(NAME)-linux-386
+	gzip $(BINDIR)/$(NAME)-linux-s390x
 	gzip $(BINDIR)/$(NAME)-linux-386
 	gzip $(BINDIR)/$(NAME)-linux-arm
 	gzip $(BINDIR)/$(NAME)-linux-arm64
@@ -84,6 +88,7 @@ clean:
 GITHUB_UPLOAD_URL=$(shell echo $${GITHUB_RELEASE_UPLOAD_URL%\{*})
 
 upload:
+	curl -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/gzip" --data-binary @$(BINDIR)/$(NAME)-linux-s390x.gz  "$(GITHUB_UPLOAD_URL)?name=$(NAME)-linux-s390x.gz"
 	curl -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/gzip" --data-binary @$(BINDIR)/$(NAME)-linux-386.gz  "$(GITHUB_UPLOAD_URL)?name=$(NAME)-linux-386.gz"
 	curl -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/gzip" --data-binary @$(BINDIR)/$(NAME)-linux-amd64.gz  "$(GITHUB_UPLOAD_URL)?name=$(NAME)-linux-amd64.gz"
 	curl -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/gzip" --data-binary @$(BINDIR)/$(NAME)-linux-arm.gz  "$(GITHUB_UPLOAD_URL)?name=$(NAME)-linux-arm.gz"
