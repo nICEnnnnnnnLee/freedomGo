@@ -31,6 +31,16 @@ type Local struct {
 	HttpUserAgent string `yaml:"HttpUserAgent"`
 }
 
+func (s *Local) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	s.HTTPMode = "ws"
+
+	type plain Local
+	if err := unmarshal((*plain)(s)); err != nil {
+		return err
+	}
+	return nil
+}
+
 type GeoDomain struct {
 	DirectIfNotInRules bool   `yaml:"DirectIfNotInRules"`
 	GfwPath            string `yaml:"GfwPath"`

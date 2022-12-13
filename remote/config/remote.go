@@ -20,6 +20,16 @@ type Remote struct {
 	ValidHttpPath string            `yaml:"HttpPath"`
 }
 
+func (s *Remote) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	s.HTTPMode = "ws"
+
+	type plain Remote
+	if err := unmarshal((*plain)(s)); err != nil {
+		return err
+	}
+	return nil
+}
+
 // type User [2]string
 
 // func NewRemote() *Remote {
