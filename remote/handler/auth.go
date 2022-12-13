@@ -23,14 +23,8 @@ var (
 	regTime     = regexp.MustCompile("my_time=([0-9]+)")
 )
 
-func GetRemoteAddr(authRecv string, conf *config.Remote) *string {
-	matches := regCookie.FindStringSubmatch(authRecv)
-	if matches == nil {
-		panic(utils.ErrHeaderNotRight)
-	}
-	cookie := matches[1]
-	// log.Println("auth cookie received...")
-	// log.Println(cookie)
+func GetRemoteAddrFromCookie(cookieptr *string, conf *config.Remote) *string {
+	cookie := *cookieptr
 	domain := regDomain.FindStringSubmatch(cookie)[1]
 	port := regPort.FindStringSubmatch(cookie)[1]
 	token := regToken.FindStringSubmatch(cookie)[1]
@@ -57,6 +51,14 @@ func GetRemoteAddr(authRecv string, conf *config.Remote) *string {
 		}
 	}
 	return nil
+}
+func GetRemoteAddr(authRecv string, conf *config.Remote) *string {
+	matches := regCookie.FindStringSubmatch(authRecv)
+	if matches == nil {
+		panic(utils.ErrHeaderNotRight)
+	}
+	cookie := matches[1]
+	return GetRemoteAddrFromCookie(&cookie, conf)
 }
 func GetRemoteConn(remoteAddr *string, conf *config.Remote) net.Conn {
 	// conn2server, err := net.Dial("tcp", *remoteAddr)

@@ -15,7 +15,7 @@ const (
 	HttpsProxyEstablished = "HTTP/1.1 200 Connection Established\r\n\r\n"
 )
 
-func HandleHttp(conn net.Conn, conf *config.Local) {
+func HandleWebSocket(conn net.Conn, conf *config.Local) {
 	header, err := utils.ReadHeader(conn)
 	if err != nil {
 		panic(err)
@@ -37,8 +37,7 @@ func HandleHttp(conn net.Conn, conf *config.Local) {
 	} else {
 		io.WriteString(conn2server, header)
 		// log.Println(header)
-		conn2server.Write([]byte(header))
-
+		// conn2server.Write([]byte(header))
 	}
 	go utils.Pip(conn, conn2server)
 	utils.Pip(conn2server, conn)

@@ -16,9 +16,21 @@ func handleClient(conn net.Conn, conf *config.Local) {
 	defer utils.HandleError()
 	switch conf.ProxyType {
 	case config.HTTP:
-		handler.HandleHttp(conn, conf)
+		// handler.HandleHttp(conn, conf)
+		switch conf.ProxyMode {
+		case "grpc":
+			handler.HandleGrpc(conn, conf)
+		default:
+			handler.HandleWebSocket(conn, conf)
+		}
+
 	case config.SOCKS5:
-		handler.HandleSocks5(conn, conf)
+		switch conf.ProxyMode {
+		case "grpc":
+			handler.HandleSocks5_GRPC(conn, conf)
+		default:
+			handler.HandleSocks5(conn, conf)
+		}
 	default:
 		log.Fatalf("ProxyType 只能是%s 或 %s, 当前为 %s\n", config.HTTP, config.SOCKS5, conf.ProxyType)
 	}

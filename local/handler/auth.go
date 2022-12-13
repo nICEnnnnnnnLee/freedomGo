@@ -31,7 +31,7 @@ var (
 		"Cookie: %s\r\n\r\n"
 )
 
-func genHeader(conf *config.Local, domain string, port string) string {
+func GenCookie(conf *config.Local, domain string, port string) string {
 	format := "my_type=1; my_domain=%s; my_port=%s; my_username=%s; my_time=%s; my_token=%s"
 	timeNow := strconv.FormatInt(time.Now().UnixMilli(), 10)
 	h := md5.New()
@@ -40,6 +40,10 @@ func genHeader(conf *config.Local, domain string, port string) string {
 	io.WriteString(h, timeNow)
 	token := fmt.Sprintf("%x", h.Sum(nil))
 	cookies := fmt.Sprintf(format, domain, port, conf.Username, timeNow, token)
+	return cookies
+}
+func genHeader(conf *config.Local, domain string, port string) string {
+	cookies := GenCookie(conf, domain, port)
 	var host string
 	if conf.RemotePort == 443 {
 		host = conf.HttpDomain

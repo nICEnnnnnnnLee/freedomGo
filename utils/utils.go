@@ -11,6 +11,14 @@ import (
 	"strings"
 )
 
+type Connection interface {
+	Read(b []byte) (n int, err error)
+
+	Write(b []byte) (n int, err error)
+
+	Close() error
+}
+
 var (
 	ErrAuthHeaderNotRight = errors.New("remote: auth header is not right")
 	ErrHeaderNotRight     = errors.New("header format is not valid")
@@ -40,7 +48,7 @@ func HandleError() {
 	}
 }
 
-func Pip(from net.Conn, to net.Conn) {
+func Pip(from Connection, to Connection) {
 	defer from.Close()
 	defer to.Close()
 	defer HandleError()
@@ -58,20 +66,7 @@ func Pip(from net.Conn, to net.Conn) {
 	}
 }
 
-// func Pip2(from net.Conn, to net.Conn) {
-// 	defer from.Close()
-// 	defer to.Close()
-// 	defer HandleError()
-// 	buffer := make([]byte, 1024)
-// 	for {
-// 		len, err := from.Read(buffer)
-// 		// log.Println("pip2 count: ", from.RemoteAddr(), to.RemoteAddr(), len)
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		to.Write(buffer[:len])
-// 	}
-// }
+
 func ReadHeader(conn net.Conn) (string, error) {
 	var result []byte = make([]byte, 0)
 	buffer := make([]byte, 1024)

@@ -1,12 +1,15 @@
+# 可选模式为 grpc ws
+ProxyMode: grpc
 BindHost: 127.0.0.1 
 BindPort: 443 
 Salt: salt
 # 在非Window系统下生效,可为空
 #DNSServer: 8.8.8.8:53
-UseSSL: false
-# SNI: www.baidu.com
-# CertPath: data/fullchain.pem
-# KeyPath: data/www.baidu.com.key
+UseSSL: true
+SNI: www.baidu.com
+CertPath: data/fullchain.pem
+KeyPath: data/www.baidu.com.key
+GrpcServiceName: freedomGo.grpc.Freedom
 Users:
   user1: pwd1 
   username: pwd

@@ -1,5 +1,7 @@
 # socks5 http
 ProxyType: http
+# ws grpc
+ProxyMode: grpc
 BindHost: 127.0.0.1 
 BindPort: 1081
 # 在非Window系统下生效,可为空
@@ -19,14 +21,16 @@ BindPort: 1081
 RemoteHost: 127.0.0.1
 RemotePort: 443
 # 和远端的连接是否经过TLS加密
-RemoteSSL: false
+RemoteSSL: true
 Salt: salt
 Username: username
 Password: pwd
 # 是否允许不安全的HTTPS连接
 AllowInsecure: true
-# 模拟的HTTP请求
+# WebSocket 模拟的HTTP请求Path
+# 该值gRPC无效, 默认为 /{GrpcServiceName}/Pipe
 HttpPath: /
+GrpcServiceName: freedomGo.grpc.Freedom
 # 如果连接是经过加密的,该值还是Client Hello消息里面的SNI
 HttpDomain: www.baidu.com
 HttpUserAgent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0

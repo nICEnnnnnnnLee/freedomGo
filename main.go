@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 
+	"github.com/nicennnnnnnlee/freedomGo/grpc"
 	"github.com/nicennnnnnnlee/freedomGo/local"
 	lconf "github.com/nicennnnnnnlee/freedomGo/local/config"
 	"github.com/nicennnnnnnlee/freedomGo/remote"
@@ -59,6 +60,8 @@ func startLocalService(path string) {
 	}
 	fmt.Printf("%+v\n", &conf)
 
+	grpc.Freedom_ServiceDesc.ServiceName = conf.GrpcServiceName
+	grpc.Freedom_Method = "/" + conf.GrpcServiceName + "/Pipe"
 	local.Start(&conf)
 }
 
@@ -76,6 +79,7 @@ func startRemoteService(path string) {
 		log.Fatalln(err)
 	}
 	fmt.Println(&conf)
-
+	grpc.Freedom_ServiceDesc.ServiceName = conf.GrpcServiceName
+	grpc.Freedom_Method = "/" + conf.GrpcServiceName + "/Pipe"
 	remote.Start(&conf)
 }
