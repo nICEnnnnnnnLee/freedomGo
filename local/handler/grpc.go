@@ -11,6 +11,7 @@ import (
 
 	pb "github.com/nicennnnnnnlee/freedomGo/grpc"
 	"github.com/nicennnnnnnlee/freedomGo/utils"
+	"github.com/nicennnnnnnlee/freedomGo/utils/geo"
 
 	"github.com/nicennnnnnnlee/freedomGo/local/config"
 	"google.golang.org/grpc"
@@ -34,6 +35,32 @@ func HandleGrpc(conn2local net.Conn, conf *config.Local) {
 		port = "80"
 	}
 
+	if conf.GeoDomain != nil {
+		r := geo.IsDirect(host)
+		if (r == nil && conf.GeoDomain.DirectIfNotInRules) ||
+			(r != nil && *r) {
+			log.Printf("直连 %s: %s\n", host, port)
+			handleDirect(conf, host, port, head, conn2local, header)
+			return
+		}
+	}
+	handleProxy(conf, host, port, head, conn2local, header)
+}
+
+func handleDirect(conf *config.Local, host string, port string, head string, conn2local net.Conn, header string) {
+	conn2server := getDirectConn(host, port, conf)
+	if head == "CONNECT" {
+		io.WriteString(conn2local, HttpsProxyEstablished)
+		// conn2local.Write([]byte(HttpsProxyEstablished))
+	} else {
+		io.WriteString(conn2server, header)
+		// conn2server.Write([]byte(header))
+	}
+	go utils.Pip(conn2local, conn2server)
+	utils.Pip(conn2server, conn2local)
+}
+
+func handleProxy(conf *config.Local, host string, port string, head string, conn2local net.Conn, header string) {
 	remoteAddr := fmt.Sprintf("%s:%d", conf.RemoteHost, conf.RemotePort)
 	var opts []grpc.DialOption = make([]grpc.DialOption, 0, 1)
 	if conf.RemoteSSL {
@@ -86,7 +113,7 @@ func HandleGrpc(conn2local net.Conn, conf *config.Local) {
 				break
 			}
 			if err != nil {
-				// log.Printf("stream.Recv error: %v", err)
+
 				break
 			}
 			conn2local.Write(req.GetData())
