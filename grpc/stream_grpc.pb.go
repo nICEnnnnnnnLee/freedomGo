@@ -34,7 +34,7 @@ func NewFreedomClient(cc grpc.ClientConnInterface) FreedomClient {
 }
 
 func (c *freedomClient) Pipe(ctx context.Context, opts ...grpc.CallOption) (Freedom_PipeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Freedom_ServiceDesc.Streams[0], "/freedomGo.grpc.Freedom/Pipe", opts...)
+	stream, err := c.cc.NewStream(ctx, &Freedom_ServiceDesc.Streams[0], Freedom_Method, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -135,3 +135,5 @@ var Freedom_ServiceDesc = grpc.ServiceDesc{
 	},
 	Metadata: "stream.proto",
 }
+
+var Freedom_Method = "/freedomGo.grpc.Freedom/Pipe"

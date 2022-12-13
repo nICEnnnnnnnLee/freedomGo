@@ -30,11 +30,13 @@ type Local struct {
 	HttpPath      string `yaml:"HttpPath"`
 	HttpDomain    string `yaml:"HttpDomain"`
 	HttpUserAgent string `yaml:"HttpUserAgent"`
+
+	GrpcServiceName string `yaml:"GrpcServiceName"`
 }
 
 func (s *Local) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	s.ProxyMode = WEBSOCKET
-
+	s.GrpcServiceName = "freedomGo.grpc.Freedom"
 	type plain Local
 	if err := unmarshal((*plain)(s)); err != nil {
 		return err

@@ -7,22 +7,23 @@ import (
 )
 
 type Remote struct {
-	ProxyMode     string            `yaml:"ProxyMode"`
-	BindHost      string            `yaml:"BindHost"`
-	BindPort      uint16            `yaml:"BindPort"`
-	DNSServer     string            `yaml:"DNSServer"`
-	UseSSL        bool              `yaml:"UseSSL"`
-	SNI           string            `yaml:"SNI"`
-	CertPath      string            `yaml:"CertPath"`
-	KeyPath       string            `yaml:"KeyPath"`
-	Salt          string            `yaml:"Salt"`
-	Users         map[string]string `yaml:"Users"`
-	ValidHttpPath string            `yaml:"HttpPath"`
+	ProxyMode       string            `yaml:"ProxyMode"`
+	BindHost        string            `yaml:"BindHost"`
+	BindPort        uint16            `yaml:"BindPort"`
+	DNSServer       string            `yaml:"DNSServer"`
+	UseSSL          bool              `yaml:"UseSSL"`
+	SNI             string            `yaml:"SNI"`
+	CertPath        string            `yaml:"CertPath"`
+	KeyPath         string            `yaml:"KeyPath"`
+	Salt            string            `yaml:"Salt"`
+	Users           map[string]string `yaml:"Users"`
+	ValidHttpPath   string            `yaml:"HttpPath"`
+	GrpcServiceName string            `yaml:"GrpcServiceName"`
 }
 
 func (s *Remote) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	s.ProxyMode = "ws"
-
+	s.GrpcServiceName = "freedomGo.grpc.Freedom"
 	type plain Remote
 	if err := unmarshal((*plain)(s)); err != nil {
 		return err
