@@ -44,32 +44,35 @@ func (s *server) Pipe(stream pb.Freedom_PipeServer) error {
 	}
 	conn2server := handler.GetRemoteConn(remoteAddr, &conf)
 	defer conn2server.Close()
-	// 开一个协程拉流
+	// 开一个协程推流
 	go func() {
 		defer conn2server.Close()
 		defer utils.HandleError()
-		buffer := make([]byte, 1024)
 		for {
-			len, err := conn2server.Read(buffer)
-			if len > 0 {
-				stream.Send(&pb.FreedomResponse{Data: buffer[:len]})
+			in, err := stream.Recv()
+			if err == io.EOF || err != nil {
+				break
 			}
-			if err != nil {
-				panic(err)
+			if _, err = conn2server.Write(in.Data); err != nil {
+				break
 			}
 		}
 	}()
-	// 推流
+	// 拉流
 	for {
-		in, err := stream.Recv()
-		if err == io.EOF {
-			return nil
-		}
-		if err != nil {
-			return err
-		}
-		if _, err = conn2server.Write(in.Data); err != nil {
-			return nil
+		buffer := make([]byte, 1024)
+		for {
+			len, err := conn2server.Read(buffer)
+			if err != nil {
+				// log.Println("err:", err)
+				return nil
+			}
+			if len > 0 {
+				err = stream.Send(&pb.FreedomResponse{Data: buffer[:len]})
+				if err != nil {
+					return err
+				}
+			}
 		}
 	}
 }

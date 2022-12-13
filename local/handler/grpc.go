@@ -98,7 +98,7 @@ func handleProxy(conf *config.Local, host string, port string, head string, conn
 		panic(err)
 	}
 	defer stream.CloseSend()
-
+	defer conn2local.Close()
 	if head == "CONNECT" {
 		io.WriteString(conn2local, HttpsProxyEstablished)
 	} else {
@@ -107,6 +107,7 @@ func handleProxy(conf *config.Local, host string, port string, head string, conn
 
 	go func() {
 		defer stream.CloseSend()
+		defer conn2local.Close()
 		for {
 			req, err := stream.Recv()
 			if err == io.EOF {

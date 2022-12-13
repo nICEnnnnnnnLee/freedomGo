@@ -170,6 +170,7 @@ func HandleSocks5_GRPC(conn net.Conn, conf *config.Local) {
 		panic(err)
 	}
 	defer stream.CloseSend()
+	defer conn.Close()
 
 	lhost, uint64port, _ := conf.BindHost, uint16(conf.BindPort), 0
 	// lhost, lport, _ := net.SplitHostPort(client.LocalAddr().String())
@@ -184,6 +185,7 @@ func HandleSocks5_GRPC(conn net.Conn, conf *config.Local) {
 	// 接下来就是充当管道工了
 	go func() {
 		defer stream.CloseSend()
+		defer conn.Close()
 		for {
 			req, err := stream.Recv()
 			if err == io.EOF {
