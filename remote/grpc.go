@@ -36,7 +36,7 @@ func (s *server) Pipe(stream pb.Freedom_PipeServer) error {
 		log.Println(md)
 		return status.Errorf(codes.Internal, "missing correct Cookie")
 	}
-	log.Println(md)
+	// log.Println(md)
 
 	remoteAddr := handler.GetRemoteAddrFromCookie(&cookie[0], &conf)
 	if remoteAddr == nil {
