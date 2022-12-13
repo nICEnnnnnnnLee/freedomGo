@@ -13,6 +13,7 @@ const (
 
 type Local struct {
 	ProxyType     string     `yaml:"ProxyType"`
+	HTTPMode      string     `yaml:"HTTPMode"`
 	BindHost      string     `yaml:"BindHost"`
 	BindPort      uint16     `yaml:"BindPort"`
 	DNSServer     string     `yaml:"DNSServer"`

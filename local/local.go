@@ -16,7 +16,14 @@ func handleClient(conn net.Conn, conf *config.Local) {
 	defer utils.HandleError()
 	switch conf.ProxyType {
 	case config.HTTP:
-		handler.HandleHttp(conn, conf)
+		// handler.HandleHttp(conn, conf)
+		switch conf.HTTPMode {
+		case "grpc":
+			handler.HandleGrpc(conn, conf)
+		default:
+			handler.HandleWebSocket(conn, conf)
+		}
+
 	case config.SOCKS5:
 		handler.HandleSocks5(conn, conf)
 	default:
