@@ -7,6 +7,7 @@ import (
 )
 
 type Remote struct {
+	HTTPMode      string            `yaml:"HTTPMode"`
 	BindHost      string            `yaml:"BindHost"`
 	BindPort      uint16            `yaml:"BindPort"`
 	DNSServer     string            `yaml:"DNSServer"`
