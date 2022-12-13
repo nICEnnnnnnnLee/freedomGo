@@ -7,7 +7,7 @@ import (
 )
 
 func Start(conf *config.Remote) {
-	switch conf.HTTPMode {
+	switch conf.ProxyMode {
 	case "grpc":
 		StartGRPC(conf)
 	case "ws":

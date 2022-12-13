@@ -17,7 +17,7 @@ func handleClient(conn net.Conn, conf *config.Local) {
 	switch conf.ProxyType {
 	case config.HTTP:
 		// handler.HandleHttp(conn, conf)
-		switch conf.HTTPMode {
+		switch conf.ProxyMode {
 		case "grpc":
 			handler.HandleGrpc(conn, conf)
 		default:
@@ -25,7 +25,7 @@ func handleClient(conn net.Conn, conf *config.Local) {
 		}
 
 	case config.SOCKS5:
-		switch conf.HTTPMode {
+		switch conf.ProxyMode {
 		case "grpc":
 			handler.HandleSocks5_GRPC(conn, conf)
 		default:

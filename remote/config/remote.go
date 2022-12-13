@@ -7,7 +7,7 @@ import (
 )
 
 type Remote struct {
-	HTTPMode      string            `yaml:"HTTPMode"`
+	ProxyMode     string            `yaml:"ProxyMode"`
 	BindHost      string            `yaml:"BindHost"`
 	BindPort      uint16            `yaml:"BindPort"`
 	DNSServer     string            `yaml:"DNSServer"`
@@ -21,7 +21,7 @@ type Remote struct {
 }
 
 func (s *Remote) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	s.HTTPMode = "ws"
+	s.ProxyMode = "ws"
 
 	type plain Remote
 	if err := unmarshal((*plain)(s)); err != nil {

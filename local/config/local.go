@@ -7,13 +7,14 @@ import (
 )
 
 const (
-	SOCKS5 = "socks5"
-	HTTP   = "http"
+	SOCKS5    = "socks5"
+	HTTP      = "http"
+	WEBSOCKET = "ws"
 )
 
 type Local struct {
 	ProxyType     string     `yaml:"ProxyType"`
-	HTTPMode      string     `yaml:"HTTPMode"`
+	ProxyMode     string     `yaml:"ProxyMode"`
 	BindHost      string     `yaml:"BindHost"`
 	BindPort      uint16     `yaml:"BindPort"`
 	DNSServer     string     `yaml:"DNSServer"`
@@ -32,7 +33,7 @@ type Local struct {
 }
 
 func (s *Local) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	s.HTTPMode = "ws"
+	s.ProxyMode = WEBSOCKET
 
 	type plain Local
 	if err := unmarshal((*plain)(s)); err != nil {
