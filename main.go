@@ -1,10 +1,11 @@
 package main
 
 import (
+	"encoding/base64"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/nicennnnnnnlee/freedomGo/grpc"
 	"github.com/nicennnnnnnlee/freedomGo/local"
@@ -32,12 +33,18 @@ func main() {
 	flag.StringVar(&configPath, "config", "./conf.local.yaml", "配置文件路径")
 	flag.StringVar(&configPath, "c", "./conf.local.yaml", "配置文件路径")
 	flag.Parse()
+	// 尝试读取环境变量的配置
+	val, exist := os.LookupEnv("APP_CONFIG_F0")
+	var configByte []byte
+	if exist {
+		configByte, _ = base64.StdEncoding.DecodeString(val)
+	}
 
 	switch typeOfApp {
 	case "local":
-		startLocalService(configPath)
+		startLocalService(configPath, configByte)
 	case "remote":
-		startRemoteService(configPath)
+		startRemoteService(configPath, configByte)
 	default:
 		flag.Usage()
 		fmt.Println("仅支持local或remote模式")
@@ -45,18 +52,25 @@ func main() {
 
 }
 
-func startLocalService(path string) {
+func startLocalService(path string, configByte []byte) {
 	var conf lconf.Local
 	// out, _ := yaml.Marshal(config.New())
 	// fmt.Println(string(out))
 
-	yamlData, err := ioutil.ReadFile(path)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	err = yaml.Unmarshal(yamlData, &conf)
-	if err != nil {
-		log.Fatalln(err)
+	if configByte != nil {
+		err := yaml.Unmarshal(configByte, &conf)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	} else {
+		yamlData, err := os.ReadFile(path)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		err = yaml.Unmarshal(yamlData, &conf)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 	fmt.Printf("%+v\n", &conf)
 
@@ -65,18 +79,25 @@ func startLocalService(path string) {
 	local.Start(&conf)
 }
 
-func startRemoteService(path string) {
+func startRemoteService(path string, configByte []byte) {
 	var conf rconf.Remote
 	// out, _ := yaml.Marshal(config.NewRemote())
 	// fmt.Println(string(out))
 
-	yamlData, err := ioutil.ReadFile(path)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	err = yaml.Unmarshal(yamlData, &conf)
-	if err != nil {
-		log.Fatalln(err)
+	if configByte != nil {
+		err := yaml.Unmarshal(configByte, &conf)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	} else {
+		yamlData, err := os.ReadFile(path)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		err = yaml.Unmarshal(yamlData, &conf)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 	fmt.Println(&conf)
 	grpc.Freedom_ServiceDesc.ServiceName = conf.GrpcServiceName
