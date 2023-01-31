@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"strings"
 
 	"github.com/nicennnnnnnlee/freedomGo/remote/config"
 	"github.com/nicennnnnnnlee/freedomGo/remote/handler"
@@ -36,6 +37,10 @@ func handleClient(conn net.Conn, conf *config.Remote, tlsConf *tls.Config) {
 	authRecv, err := utils.ReadHeader(conn)
 	if err != nil {
 		panic(utils.ErrAuthHeaderNotRight)
+	}
+	if conf.ValidHttpPath != "" && !strings.HasPrefix(authRecv, "GET "+conf.ValidHttpPath+" HTTP/1.1") {
+		Make403Response(conn)
+		return
 	}
 	// log.Println("auth header received...")
 	remoteAddr := handler.GetRemoteAddr(authRecv, conf)
