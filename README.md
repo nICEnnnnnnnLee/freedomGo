@@ -30,10 +30,45 @@
 + local端实现了HTTP(S)、SOCKS5代理，仅需一个端口，即可自动识别各种代理类型。  
 + local端HTTP(S)代理支持按域名分流，可将流量分为直连和走remote端两种。  
 + local端到remote端可以套上一层HTTP(S)，表现行为与Websocket/gRPC无异，经测试**可过CDN与Nginx**。  
++ local端到remote端可以使用http2协议，但是中间层可能会缓存相关请求，未能实现转发。  
 + local端到remote端支持简单的用户名密码验证。  
 
 ## :star:缺陷  
 + 仅支持TCP，不支持UDP
+
+## :star:如何在Web框架中使用该项目
+实现了较多的基础Handler `func (w http.ResponseWriter, r *http.Request)`  
+可以很方便地转化为其它框架的Handler，例如gin `func (c *gin.Context)`
+
+<details>
+<summary>基础http server示例</summary>
+
+
+```go
+// 相关代码在 extend文件夹下，该文件夹的内容可以独立出来
+
+func StartRemoteHTTPWebSocketProxyServer() {
+	// 在代码中初始化配置，或者设置环境变量也可。参考 extend/common.go
+	UseSSL = true
+	extend.Users = ...
+	extend.Salt = ...
+	extend.HttpPath = ...
+	extend.DnsResolver = ...
+  ...
+  // 设置路由
+	http.HandleFunc(extend.HttpPath, extend.Handler)
+
+	addr := fmt.Sprintf("%s:%d", extend.BindHost, extend.BindPort)
+	var err error
+	if UseSSL {
+		err = http.ListenAndServeTLS(addr, extend.CertPath, extend.KeyPath, nil)
+	} else {
+		err = http.ListenAndServe(addr, nil)
+	}
+	panic(err)
+}
+```
+</details>
 
 ## :star:如何配置  
 
@@ -46,7 +81,7 @@
 ```yml
 # socks5 http
 ProxyType: http
-# ws grpc
+# ws grpc http2
 ProxyMode: grpc
 BindHost: 127.0.0.1 
 BindPort: 1081
@@ -89,8 +124,8 @@ HttpUserAgent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101
 
 
 ```yml
-# 可选模式为 grpc ws
-ProxyMode: grpc
+# 可选模式为 grpc ws http2
+ProxyMode: grpc http2
 BindHost: 127.0.0.1 
 BindPort: 443 
 Salt: salt
