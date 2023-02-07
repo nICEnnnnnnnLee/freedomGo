@@ -81,7 +81,7 @@ func GetAuthorizedConn(host string, port string, conf *config.Local) net.Conn {
 	// log.Println("authSend: ", authSend)
 	authRecv, err := utils.ReadHeader(conn2server)
 	// log.Println("authRecv: ", authRecv)
-	if err != nil || !strings.Contains(authRecv, "auth: ok") {
+	if err != nil || !strings.Contains(authRecv, "uth: ok") {
 		conn2server.Close()
 		panic(utils.ErrAuthNotRight)
 	}
