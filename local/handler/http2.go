@@ -107,11 +107,11 @@ func HandleHttp2(conn net.Conn, conf *config.Local) {
 	req.Header.Set("ID", id)
 	res, err := h2Client.RoundTrip(req)
 	if err != nil {
-		log.Println("h2Client initialize failed...")
+		log.Println("h2Client initialize failed...", err.Error())
 		panic(err)
 		// return
 	}
-	// log.Println("h2Client 发送完第一次请求...")
+	// log.Println("h2Client 发送完第一次请求...", res.Header.Get("auth"))
 	if res.Header.Get("auth") == "ok" {
 
 		// 将从local收到的发送给 remote
@@ -143,6 +143,7 @@ func HandleHttp2(conn net.Conn, conf *config.Local) {
 			}
 			req, _ := http.NewRequestWithContext(ctx, "POST", url, conn)
 			req.Header.Set("ID", id)
+			req.ContentLength = -1
 			_, err := h2Client.RoundTrip(req)
 			if err != nil {
 				panic(errors.New("h2Client request发送失败"))
@@ -150,5 +151,10 @@ func HandleHttp2(conn net.Conn, conf *config.Local) {
 		}()
 		// 将从remote收到的写入local
 		io.Copy(conn, res.Body)
+	} else {
+		log.Println("h2Client 鉴权失败...", url)
+		// log.Println("res.Status", res.Status)
+		// log.Println("res.Header", res.Header)
+		// io.Copy(os.Stdout, res.Body)
 	}
 }

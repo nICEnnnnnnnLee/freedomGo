@@ -75,13 +75,14 @@ func HandlerH2(w http.ResponseWriter, r *http.Request) {
 		}
 		defer conn2server.Close()
 		idConnTable.Set(id, conn2server)
-		log.Println("id:", id, "; addr:", r.RemoteAddr, conn2server.RemoteAddr())
+		// log.Println("id:", id, "; addr:", r.RemoteAddr, conn2server.RemoteAddr())
 		defer idConnTable.Delete(id)
 		w.Header().Add("auth", "ok")
+		w.Header().Add("Content-Type", "application/octet-stream")
 		w.WriteHeader(200)
 		f, _ := w.(http.Flusher)
 		f.Flush()
-		log.Println("connection established to: " + *remoteAddr)
+		// log.Println("connection established to: " + *remoteAddr)
 		buffer := make([]byte, 1024)
 		for {
 			len, err := conn2server.Read(buffer)
@@ -106,7 +107,7 @@ func HandlerH2(w http.ResponseWriter, r *http.Request) {
 			log.Println("No connection found in table", id)
 			return
 		}
-		log.Println("id:", id, "; addr:", r.RemoteAddr, conn2server.RemoteAddr())
+		// log.Println("id:", id, "; addr:", r.RemoteAddr, conn2server.RemoteAddr())
 		if r.Header.Get("Next") != "1" {
 			defer conn2server.Close()
 		}

@@ -1,5 +1,5 @@
-# 可选模式为 grpc ws
-ProxyMode: grpc
+# 可选模式为 grpc ws http2
+ProxyMode: http2
 BindHost: 127.0.0.1 
 BindPort: 443 
 Salt: salt

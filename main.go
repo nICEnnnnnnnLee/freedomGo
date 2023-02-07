@@ -22,6 +22,7 @@ var (
 )
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	fmt.Println("FreedomGo")
 	fmt.Println("\tVersion:\t", version)
 	fmt.Println("\tBuildTime:\t", buildTime)

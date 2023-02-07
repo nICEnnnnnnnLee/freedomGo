@@ -1,7 +1,7 @@
 # socks5 http
 ProxyType: http
-# ws grpc
-ProxyMode: grpc
+# ws grpc http2
+ProxyMode: http2
 BindHost: 127.0.0.1 
 BindPort: 1081
 # 在非Window系统下生效,可为空

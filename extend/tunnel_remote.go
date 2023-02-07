@@ -61,9 +61,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func parseValidAddr(r *http.Request) (*string, error) {
-	if r.Proto == "HTTP/2" {
-		return nil, errors.New("proto http2 not allowed on current path")
-	}
+	// if r.Proto == "HTTP/2.0" { // HTTP1.1 + HTTP2.0
+	// 	return nil, errors.New("proto http2 not allowed on current path")
+	// }
 	timeStr, err := r.Cookie("my_time")
 	if err != nil {
 		return nil, errors.New("403 Forbidden")
