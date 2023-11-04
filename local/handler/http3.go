@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"context"
 	"crypto/tls"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -12,6 +14,7 @@ import (
 	"github.com/nicennnnnnnlee/freedomGo/local/config"
 	"github.com/nicennnnnnnlee/freedomGo/utils"
 	"github.com/nicennnnnnnlee/freedomGo/utils/geo"
+	"github.com/quic-go/quic-go"
 	"github.com/quic-go/quic-go/http3"
 )
 
@@ -51,7 +54,7 @@ func HandleHttp3(conn net.Conn, conf *config.Local) {
 		}
 	}
 	// 连接远程服务器
-	//remoteAddr := fmt.Sprintf("%s:%d", conf.RemoteHost, conf.RemotePort)
+	remoteAddr := fmt.Sprintf("%s:%d", conf.RemoteHost, conf.RemotePort)
 	tlsCfg := &tls.Config{
 		InsecureSkipVerify: conf.AllowInsecure,
 		ServerName:         conf.HttpDomain,
@@ -63,16 +66,19 @@ func HandleHttp3(conn net.Conn, conf *config.Local) {
 		},
 	}
 
-	//ctx, cancel := context.WithCancel(context.Background())
-	// defer cancel()
 	roundTripper := &http3.RoundTripper{
 		TLSClientConfig: tlsCfg,
+		Dial: func(ctx context.Context, addr string, tlsCfg *tls.Config, cfg *quic.Config) (quic.EarlyConnection, error) {
+			// udpAddr, err := net.ResolveUDPAddr("udp", remoteAddr)
+			return quic.DialAddrEarly(ctx, remoteAddr, tlsCfg, cfg)
+		},
 		//QuicConfig: &qconf,
 		// StreamHijacker: func(fType http3.FrameType, qConn quic.Connection, qStream quic.Stream, err error) (bool, error) {
 		// 	log.Println("fType...", fType)
 		// 	return false, err
 		// },
 	}
+
 	defer roundTripper.Close()
 	client := &http.Client{
 		Transport: roundTripper,

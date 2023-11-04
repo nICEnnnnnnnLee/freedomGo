@@ -31,6 +31,7 @@
 + local端HTTP(S)代理支持按域名分流，可将流量分为直连和走remote端两种。  
 + local端到remote端可以套上一层HTTP(S)，表现行为与Websocket/gRPC无异，经测试**可过CDN与Nginx**。  
 + local端到remote端可以使用http2协议，但是中间层可能会缓存相关请求，未能实现转发。  
++ local端到remote端可以使用http3协议，但不支持CDN。  
 + local端到remote端支持简单的用户名密码验证。  
 
 ## :star:缺陷  
@@ -133,6 +134,8 @@ Salt: salt
 #DNSServer: 8.8.8.8:53
 # ProxyMode为http3时生效，用来伪装成静态网站。为空时不做伪装。  
 HTTP3WebDir: D:\WWW\
+# ProxyMode为http3时生效，生效路径。 
+HttpPath: /12345
 UseSSL: true
 # UseSSL为false时,下面三行可注释掉
 SNI: www.baidu.com
