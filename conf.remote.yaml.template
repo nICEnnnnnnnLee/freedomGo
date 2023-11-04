@@ -7,6 +7,8 @@ Salt: salt
 #DNSServer: 8.8.8.8:53
 # ProxyMode为http3时生效，用来伪装成静态网站。为空时不做伪装。  
 HTTP3WebDir: D:\WWW\
+# ProxyMode为http3时生效，生效路径。 
+HttpPath: /12345
 UseSSL: true
 SNI: www.baidu.com
 CertPath: data/fullchain.pem
