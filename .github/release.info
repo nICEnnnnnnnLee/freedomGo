@@ -1,1 +1,1 @@
-feat: 添加HTTP3协议支持
+feat: HTTP3协议时，local端配置的远端地址可以指定ip(即可以和域名对应的DNS记录不一致)
