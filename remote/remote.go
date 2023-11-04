@@ -14,6 +14,8 @@ func Start(conf *config.Remote) {
 		StartWs(conf)
 	case "http2":
 		StartHttp2(conf)
+	case "http3":
+		StartHttp3(conf)
 	default:
 		fmt.Println("HTTPMode 必须为 grpc 或者 ws")
 	}

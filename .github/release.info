@@ -1,2 +1,1 @@
-feat: 现在可以从环境变量`APP_CONFIG_F0`读取配置(Base64编码)
-feat: 添加path路径校验
+feat: 添加HTTP3协议支持

@@ -1,10 +1,12 @@
-# 可选模式为 grpc ws http2
-ProxyMode: http2
+# 可选模式为 grpc ws http2 http3
+ProxyMode: http3
 BindHost: 127.0.0.1 
 BindPort: 443 
 Salt: salt
 # 在非Window系统下生效,可为空
 #DNSServer: 8.8.8.8:53
+# ProxyMode为http3时生效，用来伪装成静态网站。为空时不做伪装。  
+HTTP3WebDir: D:\WWW\
 UseSSL: true
 SNI: www.baidu.com
 CertPath: data/fullchain.pem

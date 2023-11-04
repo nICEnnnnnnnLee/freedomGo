@@ -81,7 +81,7 @@ func StartRemoteHTTPWebSocketProxyServer() {
 ```yml
 # socks5 http
 ProxyType: http
-# ws grpc http2
+# ws grpc http2 http3
 ProxyMode: grpc
 BindHost: 127.0.0.1 
 BindPort: 1081
@@ -124,13 +124,15 @@ HttpUserAgent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101
 
 
 ```yml
-# 可选模式为 grpc ws http2
-ProxyMode: grpc http2
+# 可选模式为 grpc ws http2 http3
+ProxyMode: ws
 BindHost: 127.0.0.1 
 BindPort: 443 
 Salt: salt
 # 在非Window系统下生效,可为空
 #DNSServer: 8.8.8.8:53
+# ProxyMode为http3时生效，用来伪装成静态网站。为空时不做伪装。  
+HTTP3WebDir: D:\WWW\
 UseSSL: true
 # UseSSL为false时,下面三行可注释掉
 SNI: www.baidu.com
