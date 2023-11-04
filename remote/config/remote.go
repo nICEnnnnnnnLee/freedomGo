@@ -19,6 +19,7 @@ type Remote struct {
 	Users           map[string]string `yaml:"Users"`
 	ValidHttpPath   string            `yaml:"HttpPath"`
 	GrpcServiceName string            `yaml:"GrpcServiceName"`
+	HTTP3WebDir     string            `yaml:"HTTP3WebDir"`
 }
 
 func (s *Remote) UnmarshalYAML(unmarshal func(interface{}) error) error {

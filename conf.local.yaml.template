@@ -1,6 +1,6 @@
 # socks5 http
 ProxyType: http
-# ws grpc http2
+# ws grpc http2 http3
 ProxyMode: http2
 BindHost: 127.0.0.1 
 BindPort: 1081
@@ -27,7 +27,7 @@ Username: username
 Password: pwd
 # 是否允许不安全的HTTPS连接
 AllowInsecure: true
-# WebSocket 模拟的HTTP请求Path
+# HTTP3/WebSocket 模拟的HTTP请求Path
 # 该值gRPC无效, 默认为 /{GrpcServiceName}/Pipe
 HttpPath: /
 GrpcServiceName: freedomGo.grpc.Freedom
