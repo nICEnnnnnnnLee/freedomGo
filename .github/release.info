@@ -1,1 +1,2 @@
-feat: HTTP3协议时，local端配置的远端地址可以指定ip(即可以和域名对应的DNS记录不一致)
+feat: 添加真实的websocket协议支持(原来的websocket在升级之后直接传输raw，现在按照协议进行了封装
+feat: 现在可以使用Cloudflare Worker实现类型为`ws_real`的remote端
