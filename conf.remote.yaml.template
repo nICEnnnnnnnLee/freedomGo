@@ -1,4 +1,4 @@
-# 可选模式为 grpc ws http2 http3
+# 可选模式为 grpc ws http2 http3 ws_real
 ProxyMode: http3
 BindHost: 127.0.0.1 
 BindPort: 443 

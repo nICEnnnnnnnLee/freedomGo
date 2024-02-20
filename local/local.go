@@ -27,6 +27,8 @@ func handleClient(conn net.Conn, conf *config.Local) {
 			handler.HandleHttp2(conn, conf)
 		case "http3":
 			handler.HandleHttp3(conn, conf)
+		case "ws_real":
+			handler.HandleWsReal(conn, conf)
 		default:
 			log.Fatalf("ProxyMode 只能是ws http2 grpc, 当前为 %s\n", conf.ProxyMode)
 		}
