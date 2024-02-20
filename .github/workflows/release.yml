@@ -13,14 +13,14 @@ jobs:
     runs-on: ubuntu-latest
    
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-go@v4.1.0
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v5.0.0
       with:
         go-version: 1.21
      
     - name: Read tag_latest
       id: tag_latest
-      uses:  ashley-taylor/read-json-property-action@v1.1
+      uses:  ashley-taylor/read-json-property-action@v1.2
       with:
         path: ./.github/release.json
         property: tag_latest
@@ -31,17 +31,17 @@ jobs:
         
     - name: Read description
       id: description
-      uses: juliangruber/read-file-action@v1
+      uses: juliangruber/read-file-action@v1.1.7
       with:
         path: ./.github/release.info
  
     - name: Create Release
       id: create_release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: V${{steps.tag_latest.outputs.value}}
+        tag_name: v${{steps.tag_latest.outputs.value}}
         name: FreedomGo - v${{steps.tag_latest.outputs.value}}
         body_path: ./.github/release.info
         draft: false
