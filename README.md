@@ -37,7 +37,10 @@
 ## :star:缺陷  
 + 仅支持TCP，不支持UDP
 
-## :star:如何在Web框架中使用该项目
+## :star:如何在Cloudflare Worker中使用该项目(remote端 + ws_real)
+请参考[cf.js](/cf.js)
+
+## :star:如何在Web框架中使用该项目(remote端)
 实现了较多的基础Handler `func (w http.ResponseWriter, r *http.Request)`  
 可以很方便地转化为其它框架的Handler，例如gin `func (c *gin.Context)`
 
@@ -82,7 +85,7 @@ func StartRemoteHTTPWebSocketProxyServer() {
 ```yml
 # socks5 http
 ProxyType: http
-# ws grpc http2 http3
+# ws grpc http2 http3 ws_real
 ProxyMode: grpc
 BindHost: 127.0.0.1 
 BindPort: 1081
@@ -125,7 +128,7 @@ HttpUserAgent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101
 
 
 ```yml
-# 可选模式为 grpc ws http2 http3
+# 可选模式为 grpc ws http2 http3 ws_real
 ProxyMode: ws
 BindHost: 127.0.0.1 
 BindPort: 443 

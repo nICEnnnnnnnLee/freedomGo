@@ -1,6 +1,6 @@
 # socks5 http
 ProxyType: http
-# ws grpc http2 http3
+# ws grpc http2 http3 ws_real
 ProxyMode: http2
 BindHost: 127.0.0.1 
 BindPort: 1081
