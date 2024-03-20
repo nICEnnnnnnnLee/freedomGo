@@ -3,7 +3,6 @@ package extend
 import (
 	"context"
 	"crypto/md5"
-	"crypto/tls"
 	"errors"
 	"fmt"
 	"io"
@@ -13,6 +12,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	tls "github.com/refraction-networking/utls"
 )
 
 const (
@@ -109,7 +110,7 @@ func GetAuthorizedConn(ctx context.Context, host string, port string) (*net.Conn
 		return nil, errors.New("connection failed:" + remoteAddr)
 	}
 	if RemoteSSL {
-		conn2server = tls.Client(conn2server, &tls.Config{
+		conn2server = tls.UClient(conn2server, &tls.Config{
 			InsecureSkipVerify: AllowInsecure,
 			ServerName:         HttpDomain,
 			VerifyConnection: func(connState tls.ConnectionState) error {
@@ -118,7 +119,7 @@ func GetAuthorizedConn(ctx context.Context, host string, port string) (*net.Conn
 				}
 				return connState.PeerCertificates[0].VerifyHostname(HttpDomain)
 			},
-		})
+		}, tls.HelloRandomized)
 	}
 	authSend := genHeader(host, port)
 	io.WriteString(conn2server, authSend)

@@ -2,13 +2,14 @@ package handler
 
 import (
 	"crypto/md5"
-	"crypto/tls"
 	"fmt"
 	"io"
 	"net"
 	"strconv"
 	"strings"
 	"time"
+
+	tls "github.com/refraction-networking/utls"
 
 	"github.com/nicennnnnnnlee/freedomGo/local/config"
 	"github.com/nicennnnnnnlee/freedomGo/utils"
@@ -64,7 +65,7 @@ func GetAuthorizedConn(host string, port string, conf *config.Local) net.Conn {
 	}
 	// log.Println("remote TCP link established...")
 	if conf.RemoteSSL {
-		conn2server = tls.Client(conn2server, &tls.Config{
+		conn2server = tls.UClient(conn2server, &tls.Config{
 			InsecureSkipVerify: conf.AllowInsecure,
 			ServerName:         conf.HttpDomain,
 			VerifyConnection: func(connState tls.ConnectionState) error {
@@ -73,7 +74,7 @@ func GetAuthorizedConn(host string, port string, conf *config.Local) net.Conn {
 				}
 				return connState.PeerCertificates[0].VerifyHostname(conf.HttpDomain)
 			},
-		})
+		}, tls.HelloRandomized)
 	}
 	// log.Println("remote TLS established...")
 	authSend := genHeader(conf, host, port)
