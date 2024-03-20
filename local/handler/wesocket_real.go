@@ -2,13 +2,14 @@ package handler
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
 	"io"
 	"net"
 	"net/http"
 	"regexp"
 	"time"
+
+	tls "github.com/refraction-networking/utls"
 
 	"github.com/gorilla/websocket"
 	"github.com/nicennnnnnnlee/freedomGo/extend"
@@ -79,7 +80,14 @@ func HandleWsReal(conn net.Conn, conf *config.Local) {
 		}
 		return dialer.DialContext(ctx, network, remoteAddr)
 	}
-
+	NetDialTLSContext := func(ctx context.Context, network, _addr string) (net.Conn, error) {
+		tcpConn, err := NetDialContext(ctx, network, _addr)
+		if err != nil {
+			return tcpConn, err
+		}
+		tlsConn := tls.UClient(tcpConn, tlsCfg, tls.HelloRandomized)
+		return tlsConn, err
+	}
 	var url string
 	if conf.RemoteSSL {
 		url = "wss://" + remoteHostAddr + conf.HttpPath
@@ -88,9 +96,9 @@ func HandleWsReal(conn net.Conn, conf *config.Local) {
 	}
 	// 获取websocket dialer, 并连接
 	var dialer = &websocket.Dialer{
-		TLSClientConfig:  tlsCfg,
-		HandshakeTimeout: 45 * time.Second,
-		NetDialContext:   NetDialContext,
+		HandshakeTimeout:  45 * time.Second,
+		NetDialContext:    NetDialContext,
+		NetDialTLSContext: NetDialTLSContext,
 	}
 	var reqHeader = http.Header{}
 	reqHeader.Set("Cookie", GenCookie(conf, host, port))
