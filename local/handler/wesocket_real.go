@@ -57,9 +57,10 @@ func HandleWsReal(conn net.Conn, conf *config.Local) {
 	remoteAddr := fmt.Sprintf("%s:%d", conf.RemoteHost, conf.RemotePort)
 	remoteHostAddr := fmt.Sprintf("%s:%d", conf.HttpDomain, conf.RemotePort)
 	tlsCfg := &tls.Config{
-		InsecureSkipVerify: conf.AllowInsecure,
-		ServerName:         conf.HttpDomain,
-		NextProtos:         []string{"http/1.1"}, // "http/1.1",
+		InsecureSkipVerify:     conf.AllowInsecure,
+		InsecureSkipTimeVerify: conf.AllowCertTimeOutdated,
+		ServerName:             conf.HttpDomain,
+		NextProtos:             []string{"http/1.1"}, // "http/1.1",
 		VerifyConnection: func(connState tls.ConnectionState) error {
 			if conf.AllowInsecure {
 				return nil

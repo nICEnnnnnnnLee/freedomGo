@@ -20,16 +20,17 @@ var (
 	Users       = make(map[string]string)
 	DnsResolver = getEnvOr("FCK_DNS_RESOLVER", "")
 
-	UserName      = getEnvOr("FCK_USER_NAME", "USER_NAME")
-	Password      = getEnvOr("FCK_PASSWORD", "PASSWORD")
-	Salt          = getEnvOr("FCK_SALT", "SALT")
-	RemoteHost    = getEnvOr("FCK_REMOTE_HOST", "127.0.0.1")
-	RemotePort    = getEnvOr("FCK_REMOTE_PORT", "443")
-	HttpDomain    = getEnvOr("FCK_REMOTE_DOMAIN", "test.com")
-	HttpPath      = getEnvOr("FCK_REMOTE_HTTP_PATH", "/yyuiopk")
-	HttpUserAgent = getEnvOr("FCK_REMOTE_HTTP_UA", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0")
-	RemoteSSL     = getEnvOr("FCK_REMOTE_HTTPS", "true") != "false"
-	AllowInsecure = getEnvOr("FCK_REMOTE_HTTPS_TRUST_ALL", "false") == "false"
+	UserName              = getEnvOr("FCK_USER_NAME", "USER_NAME")
+	Password              = getEnvOr("FCK_PASSWORD", "PASSWORD")
+	Salt                  = getEnvOr("FCK_SALT", "SALT")
+	RemoteHost            = getEnvOr("FCK_REMOTE_HOST", "127.0.0.1")
+	RemotePort            = getEnvOr("FCK_REMOTE_PORT", "443")
+	HttpDomain            = getEnvOr("FCK_REMOTE_DOMAIN", "test.com")
+	HttpPath              = getEnvOr("FCK_REMOTE_HTTP_PATH", "/yyuiopk")
+	HttpUserAgent         = getEnvOr("FCK_REMOTE_HTTP_UA", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0")
+	RemoteSSL             = getEnvOr("FCK_REMOTE_HTTPS", "true") != "false"
+	AllowInsecure         = getEnvOr("FCK_REMOTE_HTTPS_TRUST_ALL", "false") == "false"
+	AllowCertTimeOutdated = getEnvOr("FCK_REMOTE_HTTPS_SKIP_TIME_VERIFY", "false") == "false"
 )
 
 type Mux struct {

@@ -111,8 +111,9 @@ func GetAuthorizedConn(ctx context.Context, host string, port string) (*net.Conn
 	}
 	if RemoteSSL {
 		conn2server = tls.UClient(conn2server, &tls.Config{
-			InsecureSkipVerify: AllowInsecure,
-			ServerName:         HttpDomain,
+			InsecureSkipVerify:     AllowInsecure,
+			InsecureSkipTimeVerify: AllowCertTimeOutdated,
+			ServerName:             HttpDomain,
 			VerifyConnection: func(connState tls.ConnectionState) error {
 				if AllowInsecure {
 					return nil

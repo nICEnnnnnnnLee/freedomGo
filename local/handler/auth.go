@@ -66,8 +66,9 @@ func GetAuthorizedConn(host string, port string, conf *config.Local) net.Conn {
 	// log.Println("remote TCP link established...")
 	if conf.RemoteSSL {
 		conn2server = tls.UClient(conn2server, &tls.Config{
-			InsecureSkipVerify: conf.AllowInsecure,
-			ServerName:         conf.HttpDomain,
+			InsecureSkipVerify:     conf.AllowInsecure,
+			InsecureSkipTimeVerify: conf.AllowCertTimeOutdated,
+			ServerName:             conf.HttpDomain,
 			VerifyConnection: func(connState tls.ConnectionState) error {
 				if conf.AllowInsecure {
 					return nil
