@@ -31,8 +31,10 @@ AllowInsecure: true
 ClientHelloID: go
 ## 模拟该路径的ClientHello消息的特征，当 ClientHelloID = custom 时生效
 ClientHelloRawPath:
-## Alpn设置。 Websocket仅支持HTTP 1.1, 当服务器支持HTTP 2时, 需要注释掉 `h2`
-## 保守的做法是，去掉 h2 测试连通性；再添加 h2，成功则不变，失败回退删除 h2 
+## Alpn设置。 
+##  当ProxyMode 为 ws/ws_real时，需要注意Websocket仅支持HTTP 1.1。 
+##     此时，若服务器支持HTTP 2, 必须注释掉 `h2`; 不支持的时候，可以添加上，以模拟完整的TLS特征
+##  当ProxyMode 为 http2时，必须添加 h2
 ClientHelloNextProtos: 
     # - h2
     - http/1.1
