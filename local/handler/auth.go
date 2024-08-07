@@ -2,7 +2,6 @@ package handler
 
 import (
 	"crypto/md5"
-	"crypto/tls"
 	"fmt"
 	"io"
 	"net"
@@ -64,16 +63,7 @@ func GetAuthorizedConn(host string, port string, conf *config.Local) net.Conn {
 	}
 	// log.Println("remote TCP link established...")
 	if conf.RemoteSSL {
-		conn2server = tls.Client(conn2server, &tls.Config{
-			InsecureSkipVerify: conf.AllowInsecure,
-			ServerName:         conf.HttpDomain,
-			VerifyConnection: func(connState tls.ConnectionState) error {
-				if conf.AllowInsecure {
-					return nil
-				}
-				return connState.PeerCertificates[0].VerifyHostname(conf.HttpDomain)
-			},
-		})
+		conn2server = conf.GetUConn(conn2server)
 	}
 	// log.Println("remote TLS established...")
 	authSend := genHeader(conf, host, port)

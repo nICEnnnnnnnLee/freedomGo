@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
 	"io"
 	"net"
@@ -55,17 +54,6 @@ func HandleWsReal(conn net.Conn, conf *config.Local) {
 	// 连接远程服务器
 	remoteAddr := fmt.Sprintf("%s:%d", conf.RemoteHost, conf.RemotePort)
 	remoteHostAddr := fmt.Sprintf("%s:%d", conf.HttpDomain, conf.RemotePort)
-	tlsCfg := &tls.Config{
-		InsecureSkipVerify: conf.AllowInsecure,
-		ServerName:         conf.HttpDomain,
-		NextProtos:         []string{"http/1.1"}, // "http/1.1",
-		VerifyConnection: func(connState tls.ConnectionState) error {
-			if conf.AllowInsecure {
-				return nil
-			}
-			return connState.PeerCertificates[0].VerifyHostname(conf.HttpDomain)
-		},
-	}
 	NetDialContext := func(ctx context.Context, network string, _addr string) (net.Conn, error) {
 		var dialer net.Dialer
 		dialer.Timeout = time.Second * 5
@@ -79,7 +67,14 @@ func HandleWsReal(conn net.Conn, conf *config.Local) {
 		}
 		return dialer.DialContext(ctx, network, remoteAddr)
 	}
-
+	NetDialTLSContext := func(ctx context.Context, network, _addr string) (net.Conn, error) {
+		tcpConn, err := NetDialContext(ctx, network, _addr)
+		if err != nil {
+			return tcpConn, err
+		}
+		tlsConn := conf.GetUConn(tcpConn)
+		return tlsConn, err
+	}
 	var url string
 	if conf.RemoteSSL {
 		url = "wss://" + remoteHostAddr + conf.HttpPath
@@ -88,9 +83,9 @@ func HandleWsReal(conn net.Conn, conf *config.Local) {
 	}
 	// 获取websocket dialer, 并连接
 	var dialer = &websocket.Dialer{
-		TLSClientConfig:  tlsCfg,
-		HandshakeTimeout: 45 * time.Second,
-		NetDialContext:   NetDialContext,
+		HandshakeTimeout:  45 * time.Second,
+		NetDialContext:    NetDialContext,
+		NetDialTLSContext: NetDialTLSContext,
 	}
 	var reqHeader = http.Header{}
 	reqHeader.Set("Cookie", GenCookie(conf, host, port))

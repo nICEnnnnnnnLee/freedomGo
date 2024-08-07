@@ -29,8 +29,8 @@ func main() {
 
 	var typeOfApp string
 	var configPath string
-	flag.StringVar(&typeOfApp, "type", "local", "模式local/remote")
-	flag.StringVar(&typeOfApp, "t", "local", "模式local/remote")
+	flag.StringVar(&typeOfApp, "type", "local", "模式local/remote/capture")
+	flag.StringVar(&typeOfApp, "t", "local", "模式local/remote/capture")
 	flag.StringVar(&configPath, "config", "./conf.local.yaml", "配置文件路径")
 	flag.StringVar(&configPath, "c", "./conf.local.yaml", "配置文件路径")
 	flag.Parse()
@@ -46,6 +46,8 @@ func main() {
 		startLocalService(configPath, configByte)
 	case "remote":
 		startRemoteService(configPath, configByte)
+	case "capture":
+		local.Capture(configPath)
 	default:
 		flag.Usage()
 		fmt.Println("仅支持local或remote模式")

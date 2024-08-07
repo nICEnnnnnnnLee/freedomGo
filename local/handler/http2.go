@@ -57,24 +57,18 @@ func HandleHttp2(conn net.Conn, conf *config.Local) {
 	}
 	// 连接远程服务器
 	remoteAddr := fmt.Sprintf("%s:%d", conf.RemoteHost, conf.RemotePort)
-	tlsCfg := &tls.Config{
-		InsecureSkipVerify: conf.AllowInsecure,
-		ServerName:         conf.HttpDomain,
-		NextProtos:         []string{"h2"}, // "http/1.1",
-		VerifyConnection: func(connState tls.ConnectionState) error {
-			if conf.AllowInsecure {
-				return nil
-			}
-			return connState.PeerCertificates[0].VerifyHostname(conf.HttpDomain)
-		},
-	}
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	var conn2server net.Conn
 	var url string
 	// conn2server, err := DialTCP(remoteAddr, dnsResolver)
 	if conf.RemoteSSL {
-		conn2server, err = extend.DialTLSContext(ctx, "tcp", remoteAddr, tlsCfg)
+		// conn2server, err = extend.DialTLSContext(ctx, "tcp", remoteAddr, tlsCfg)
+		conn2server, err = utils.DialTCPContext(ctx, remoteAddr, conf.DNSServer)
+		if err != nil {
+			panic(err)
+		}
+		conn2server = conf.GetUConn(conn2server)
 		url = "https://" + conf.HttpDomain + conf.HttpPath
 	} else {
 		// conn2server, err = extend.DialTCPContext(ctx, remoteAddr)
@@ -91,8 +85,15 @@ func HandleHttp2(conn net.Conn, conf *config.Local) {
 
 	// 获取h2Client
 	transport := &http2.Transport{
-		TLSClientConfig: tlsCfg,
-		DialTLSContext:  extend.DialTLSContext,
+		// TLSClientConfig: tlsCfg,
+		DialTLSContext: func(ctx context.Context, _network, addr string, _cfg *tls.Config) (net.Conn, error) {
+			conn2server, err = utils.DialTCPContext(ctx, remoteAddr, conf.DNSServer)
+			if err != nil {
+				return nil, err
+			}
+			conn2server = conf.GetUConn(conn2server)
+			return conn2server, nil
+		},
 	}
 	h2Client, err := transport.NewClientConn(conn2server)
 	defer h2Client.Shutdown(ctx)

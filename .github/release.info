@@ -1,2 +1,4 @@
-feat: 添加真实的websocket协议支持(原来的websocket在升级之后直接传输raw，现在按照协议进行了封装
-feat: 现在可以使用Cloudflare Worker实现类型为`ws_real`的remote端
+feat: `ws`方式与服务器连接时可以使用uTLS设置指纹
+feat: `ws_real`方式与服务器连接时可以使用uTLS设置指纹
+feat: `http2`方式与服务器连接时可以使用uTLS设置指纹
+feat: 增加`capture`模式，用于捕获`Client Hello`数据

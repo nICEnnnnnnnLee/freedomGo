@@ -58,8 +58,8 @@ func StartRemoteHTTPWebSocketProxyServer() {
 	extend.Salt = ...
 	extend.HttpPath = ...
 	extend.DnsResolver = ...
-  ...
-  // 设置路由
+	...
+	// 设置路由
 	http.HandleFunc(extend.HttpPath, extend.Handler)
 
 	addr := fmt.Sprintf("%s:%d", extend.BindHost, extend.BindPort)
@@ -112,6 +112,20 @@ Username: username
 Password: pwd
 # 是否允许不安全的HTTPS连接
 AllowInsecure: true
+## 模拟TLS特征 go custom random firefox ios chrome qq 360 safari android_okhttp edge
+ClientHelloID: go
+## 模拟该路径的ClientHello消息的特征，当 ClientHelloID = custom 时生效
+##  1. 运行 freedomGo -t capture -c 127.0.0.1
+##  2. 改host将 xxx.com 设为 127.0.0.1
+##  3. 用Firefox浏览器访问 https://xxx.com/ 可获取Firefox浏览器特征数据(保存在当前工作目录下)。其它同理
+ClientHelloRawPath:
+## Alpn设置。 
+##  当ProxyMode 为 ws/ws_real时，需要注意Websocket仅支持HTTP 1.1。 
+##     此时，若服务器支持HTTP 2, 必须注释掉 `h2`; 不支持的时候，可以添加上，以模拟完整的TLS特征
+##  当ProxyMode 为 http2时，必须添加 h2
+ClientHelloNextProtos: 
+    # - h2
+    - http/1.1
 # WebSocket 模拟的HTTP请求Path
 # 该值gRPC无效, 默认为 /{GrpcServiceName}/Pipe
 HttpPath: /
