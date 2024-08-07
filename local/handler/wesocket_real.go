@@ -9,8 +9,6 @@ import (
 	"regexp"
 	"time"
 
-	tls "github.com/refraction-networking/utls"
-
 	"github.com/gorilla/websocket"
 	"github.com/nicennnnnnnlee/freedomGo/extend"
 	"github.com/nicennnnnnnlee/freedomGo/local/config"
@@ -56,18 +54,6 @@ func HandleWsReal(conn net.Conn, conf *config.Local) {
 	// 连接远程服务器
 	remoteAddr := fmt.Sprintf("%s:%d", conf.RemoteHost, conf.RemotePort)
 	remoteHostAddr := fmt.Sprintf("%s:%d", conf.HttpDomain, conf.RemotePort)
-	tlsCfg := &tls.Config{
-		InsecureSkipVerify:     conf.AllowInsecure,
-		InsecureSkipTimeVerify: conf.AllowCertTimeOutdated,
-		ServerName:             conf.HttpDomain,
-		NextProtos:             []string{"http/1.1"}, // "http/1.1",
-		VerifyConnection: func(connState tls.ConnectionState) error {
-			if conf.AllowInsecure {
-				return nil
-			}
-			return connState.PeerCertificates[0].VerifyHostname(conf.HttpDomain)
-		},
-	}
 	NetDialContext := func(ctx context.Context, network string, _addr string) (net.Conn, error) {
 		var dialer net.Dialer
 		dialer.Timeout = time.Second * 5
@@ -86,7 +72,7 @@ func HandleWsReal(conn net.Conn, conf *config.Local) {
 		if err != nil {
 			return tcpConn, err
 		}
-		tlsConn := tls.UClient(tcpConn, tlsCfg, tls.HelloRandomized)
+		tlsConn := conf.GetUConn(tcpConn)
 		return tlsConn, err
 	}
 	var url string

@@ -13,20 +13,23 @@ const (
 )
 
 type Local struct {
-	ProxyType             string     `yaml:"ProxyType"`
-	ProxyMode             string     `yaml:"ProxyMode"`
-	BindHost              string     `yaml:"BindHost"`
-	BindPort              uint16     `yaml:"BindPort"`
-	DNSServer             string     `yaml:"DNSServer"`
-	RemoteHost            string     `yaml:"RemoteHost"`
-	RemotePort            uint16     `yaml:"RemotePort"`
-	RemoteSSL             bool       `yaml:"RemoteSSL"`
-	GeoDomain             *GeoDomain `yaml:"GeoDomain"`
-	Salt                  string     `yaml:"Salt"`
-	Username              string     `yaml:"Username"`
-	Password              string     `yaml:"Password"`
-	AllowInsecure         bool       `yaml:"AllowInsecure"`
-	AllowCertTimeOutdated bool       `yaml:"AllowCertTimeOutdated"`
+	ProxyType                string     `yaml:"ProxyType"`
+	ProxyMode                string     `yaml:"ProxyMode"`
+	BindHost                 string     `yaml:"BindHost"`
+	BindPort                 uint16     `yaml:"BindPort"`
+	DNSServer                string     `yaml:"DNSServer"`
+	RemoteHost               string     `yaml:"RemoteHost"`
+	RemotePort               uint16     `yaml:"RemotePort"`
+	RemoteSSL                bool       `yaml:"RemoteSSL"`
+	TLSClientHelloID         string     `yaml:"ClientHelloID"`
+	TLSClientHelloRawPath    string     `yaml:"ClientHelloRawPath"`
+	TLSClientHelloNextProtos []string   `yaml:"ClientHelloNextProtos"`
+	GeoDomain                *GeoDomain `yaml:"GeoDomain"`
+	Salt                     string     `yaml:"Salt"`
+	Username                 string     `yaml:"Username"`
+	Password                 string     `yaml:"Password"`
+	AllowInsecure            bool       `yaml:"AllowInsecure"`
+	AllowCertTimeOutdated    bool       `yaml:"AllowCertTimeOutdated"`
 
 	HttpPath      string `yaml:"HttpPath"`
 	HttpDomain    string `yaml:"HttpDomain"`
@@ -39,10 +42,14 @@ func (s *Local) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	s.ProxyMode = WEBSOCKET
 	s.GrpcServiceName = "freedomGo.grpc.Freedom"
 	s.AllowCertTimeOutdated = false
+	s.TLSClientHelloID = "go"
+	s.TLSClientHelloNextProtos = []string{"http/1.1"}
 	type plain Local
 	if err := unmarshal((*plain)(s)); err != nil {
 		return err
 	}
+	s.InitTlsCfg()
+	s.InitTlsSpec()
 	return nil
 }
 

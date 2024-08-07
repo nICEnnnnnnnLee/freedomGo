@@ -9,8 +9,6 @@ import (
 	"strings"
 	"time"
 
-	tls "github.com/refraction-networking/utls"
-
 	"github.com/nicennnnnnnlee/freedomGo/local/config"
 	"github.com/nicennnnnnnlee/freedomGo/utils"
 )
@@ -65,17 +63,7 @@ func GetAuthorizedConn(host string, port string, conf *config.Local) net.Conn {
 	}
 	// log.Println("remote TCP link established...")
 	if conf.RemoteSSL {
-		conn2server = tls.UClient(conn2server, &tls.Config{
-			InsecureSkipVerify:     conf.AllowInsecure,
-			InsecureSkipTimeVerify: conf.AllowCertTimeOutdated,
-			ServerName:             conf.HttpDomain,
-			VerifyConnection: func(connState tls.ConnectionState) error {
-				if conf.AllowInsecure {
-					return nil
-				}
-				return connState.PeerCertificates[0].VerifyHostname(conf.HttpDomain)
-			},
-		}, tls.HelloRandomized)
+		conn2server = conf.GetUConn(conn2server)
 	}
 	// log.Println("remote TLS established...")
 	authSend := genHeader(conf, host, port)

@@ -1,7 +1,7 @@
 # socks5 http
 ProxyType: http
 # ws grpc http2 http3 ws_real
-ProxyMode: http2
+ProxyMode: ws
 BindHost: 127.0.0.1 
 BindPort: 1081
 # 在非Window系统下生效,可为空
@@ -27,6 +27,15 @@ Username: username
 Password: pwd
 # 是否允许不安全的HTTPS连接
 AllowInsecure: true
+## 模拟TLS特征 go custom random firefox ios chrome qq 360 safari android_okhttp edge
+ClientHelloID: go
+## 模拟该路径的ClientHello消息的特征，当 ClientHelloID = custom 时生效
+ClientHelloRawPath:
+## Alpn设置。 Websocket仅支持HTTP 1.1, 当服务器支持HTTP 2时, 需要注释掉 `h2`
+## 保守的做法是，去掉 h2 测试连通性；再添加 h2，成功则不变，失败回退删除 h2 
+ClientHelloNextProtos: 
+    # - h2
+    - http/1.1
 # HTTP3/WebSocket 模拟的HTTP请求Path
 # 该值gRPC无效, 默认为 /{GrpcServiceName}/Pipe
 HttpPath: /
