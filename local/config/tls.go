@@ -78,6 +78,20 @@ func (conf *Local) InitTlsSpec() {
 			ClientHelloSpec = &spec
 		}
 	}
+	if ClientHelloSpec != nil {
+		for _, ext := range ClientHelloSpec.Extensions {
+			alpnExt, ok := ext.(*tls.ALPNExtension)
+			if ok {
+				log.Println("原始Alpn: ", alpnExt.AlpnProtocols)
+				alpnExt.AlpnProtocols = TlsCfg.NextProtos
+				log.Println("修改后Alpn: ", alpnExt.AlpnProtocols)
+			}
+			asExt, ok := ext.(*tls.ApplicationSettingsExtension)
+			if ok {
+				log.Println("原始SupportedProtocols: ", asExt.SupportedProtocols)
+			}
+		}
+	}
 }
 
 func (conf *Local) GetClientHelloSpec() *tls.ClientHelloSpec {
