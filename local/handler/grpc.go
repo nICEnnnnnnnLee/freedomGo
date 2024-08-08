@@ -75,7 +75,15 @@ func handleProxy(conf *config.Local, host string, port string, head string, conn
 			},
 		}
 		creds := credentials.NewTLS(tlsConfig)
-		opts = append(opts, grpc.WithTransportCredentials(creds))
+		dialer := grpc.WithContextDialer(func(ctx context.Context, addr string) (net.Conn, error) {
+			conn, err := utils.DialTCPContext(ctx, addr, conf.DNSServer)
+			if err != nil {
+				return nil, err
+			}
+			conn = conf.GetUConn(conn)
+			return conn, nil
+		})
+		opts = append(opts, dialer, grpc.WithTransportCredentials(creds))
 	} else {
 		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	}
