@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"time"
 
 	pb "github.com/nicennnnnnnlee/freedomGo/grpc"
 	"github.com/nicennnnnnnlee/freedomGo/utils"
@@ -81,11 +82,14 @@ func StartGRPC(confRemote *config.Remote) {
 	conf = *confRemote
 	var opts []grpc.ServerOption = make([]grpc.ServerOption, 0, 1)
 	if conf.UseSSL {
-		cert, err := tls.LoadX509KeyPair(conf.CertPath, conf.KeyPath)
-		if err != nil {
-			panic(err)
+		tlsCert := &utils.TlsCert{
+			CertPath:       conf.CertPath,
+			KeyPath:        conf.KeyPath,
+			AttempDuration: time.Minute * 5,
 		}
-		opts = append(opts, grpc.Creds(credentials.NewServerTLSFromCert(&cert)))
+		GetCertFunc := tlsCert.GetCertFunc()
+		opt := credentials.NewTLS(&tls.Config{GetCertificate: GetCertFunc})
+		opts = append(opts, grpc.Creds(opt))
 	}
 
 	fmt.Println("服务器开始监听...")
