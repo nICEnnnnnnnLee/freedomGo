@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
 	"io"
 	"log"
@@ -17,7 +16,6 @@ import (
 	"github.com/nicennnnnnnlee/freedomGo/local/handler/internal"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -63,35 +61,7 @@ func handleDirect(conf *config.Local, host string, port string, head string, con
 
 func handleProxy(conf *config.Local, host string, port string, head string, conn2local net.Conn, header string) {
 	remoteAddr := fmt.Sprintf("%s:%d", conf.RemoteHost, conf.RemotePort)
-	var opts []grpc.DialOption
-	if conf.RemoteSSL {
-		tlsConfig := &tls.Config{
-			InsecureSkipVerify: conf.AllowInsecure,
-			ServerName:         conf.HttpDomain,
-			NextProtos:         conf.TLSClientHelloNextProtos,
-			VerifyConnection: func(connState tls.ConnectionState) error {
-				if conf.AllowInsecure {
-					return nil
-				}
-				return connState.PeerCertificates[0].VerifyHostname(conf.HttpDomain)
-			},
-		}
-		creds := internal.NewTLS(tlsConfig, conf)
-		// creds := credentials.NewTLS(tlsConfig)
-		dialer := grpc.WithContextDialer(func(ctx context.Context, addr string) (net.Conn, error) {
-			conn, err := utils.DialTCPContext(ctx, addr, conf.DNSServer)
-			if err != nil {
-				return nil, err
-			}
-			// conn = conf.GetUConn(conn)
-			return conn, nil
-		})
-		opts = []grpc.DialOption{dialer, grpc.WithTransportCredentials(creds)}
-	} else {
-		opts = []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	}
-	opts = append(opts, grpc.WithUserAgent(conf.HttpUserAgent))
-
+	opts := internal.GetGlobalGrpcConfig(conf)
 	conn2server, err := grpc.Dial(remoteAddr, opts...)
 	if err != nil {
 		log.Panicf("did not connect: %v", err)
