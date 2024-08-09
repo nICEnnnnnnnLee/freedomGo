@@ -15,6 +15,7 @@ require (
 	github.com/gorilla/websocket v1.5.1 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/onsi/ginkgo/v2 v2.9.5 // indirect
+	github.com/open-ch/ja3 v1.0.1 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
 	github.com/quic-go/qtls-go1-20 v0.4.1 // indirect
 	github.com/refraction-networking/utls v1.6.7 // indirect

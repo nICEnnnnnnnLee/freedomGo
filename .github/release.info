@@ -1,4 +1,7 @@
-feat: `ws`方式与服务器连接时可以使用uTLS设置指纹
-feat: `ws_real`方式与服务器连接时可以使用uTLS设置指纹
-feat: `http2`方式与服务器连接时可以使用uTLS设置指纹
-feat: 增加`capture`模式，用于捕获`Client Hello`数据
+feat: `capture`模式支持ja3指纹打印
+feat: `grpc`方式与服务器连接时可以使用uTLS设置指纹
+feat: `ws`服务的TLS证书能够在过期的时候尝试自动加载
+feat: `ws_real`服务的TLS证书能够在过期的时候尝试自动加载
+feat: `grpc`服务的TLS证书能够在过期的时候尝试自动加载
+feat: `http2`服务的TLS证书能够在过期的时候尝试自动加载
+feat: `http3`服务的TLS证书能够在过期的时候尝试自动加载

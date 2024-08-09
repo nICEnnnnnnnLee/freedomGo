@@ -6,6 +6,7 @@ import (
 	"io"
 	"net"
 	"strings"
+	"time"
 
 	"github.com/nicennnnnnnlee/freedomGo/remote/config"
 	"github.com/nicennnnnnnlee/freedomGo/remote/handler"
@@ -58,13 +59,15 @@ func handleClient(conn net.Conn, conf *config.Remote, tlsConf *tls.Config) {
 func StartWs(conf *config.Remote) {
 	var tlsConfig *tls.Config
 	if conf.UseSSL {
-		crt, err := tls.LoadX509KeyPair(conf.CertPath, conf.KeyPath)
-		if err != nil {
-			panic(err)
+		tlsCert := &utils.TlsCert{
+			CertPath:       conf.CertPath,
+			KeyPath:        conf.KeyPath,
+			AttempDuration: time.Minute * 5,
 		}
+		GetCertFunc := tlsCert.GetCertFunc()
 		tlsConfig = &tls.Config{
-			Certificates: []tls.Certificate{crt},
-			ServerName:   conf.SNI,
+			ServerName:     conf.SNI,
+			GetCertificate: GetCertFunc,
 		}
 	}
 

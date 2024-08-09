@@ -1,11 +1,14 @@
 package remote
 
 import (
+	"crypto/tls"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/nicennnnnnnlee/freedomGo/extend"
 	"github.com/nicennnnnnnlee/freedomGo/remote/config"
+	"github.com/nicennnnnnnlee/freedomGo/utils"
 )
 
 func StartHttp2(conf *config.Remote) {
@@ -22,7 +25,19 @@ func StartHttp2(conf *config.Remote) {
 	var err error
 	if conf.UseSSL {
 		fmt.Println("使用HTTPS")
-		err = http.ListenAndServeTLS(addr, conf.CertPath, conf.KeyPath, nil)
+		tlsCert := &utils.TlsCert{
+			CertPath:       conf.CertPath,
+			KeyPath:        conf.KeyPath,
+			AttempDuration: time.Minute * 5,
+		}
+		GetCertFunc := tlsCert.GetCertFunc()
+		server := &http.Server{
+			Addr:      addr,
+			Handler:   nil,
+			TLSConfig: &tls.Config{GetCertificate: GetCertFunc},
+		}
+		err = server.ListenAndServeTLS("", "")
+		// err = http.ListenAndServeTLS(addr, conf.CertPath, conf.KeyPath, nil)
 	} else {
 		fmt.Println("使用HTTP")
 		err = http.ListenAndServe(addr, nil)

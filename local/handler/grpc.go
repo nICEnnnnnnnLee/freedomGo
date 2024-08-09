@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
 	"io"
 	"log"
@@ -14,9 +13,9 @@ import (
 	"github.com/nicennnnnnnlee/freedomGo/utils/geo"
 
 	"github.com/nicennnnnnnlee/freedomGo/local/config"
+	"github.com/nicennnnnnnlee/freedomGo/local/handler/internal"
+
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -62,25 +61,7 @@ func handleDirect(conf *config.Local, host string, port string, head string, con
 
 func handleProxy(conf *config.Local, host string, port string, head string, conn2local net.Conn, header string) {
 	remoteAddr := fmt.Sprintf("%s:%d", conf.RemoteHost, conf.RemotePort)
-	var opts []grpc.DialOption = make([]grpc.DialOption, 0, 1)
-	if conf.RemoteSSL {
-		tlsConfig := &tls.Config{
-			InsecureSkipVerify: conf.AllowInsecure,
-			ServerName:         conf.HttpDomain,
-			VerifyConnection: func(connState tls.ConnectionState) error {
-				if conf.AllowInsecure {
-					return nil
-				}
-				return connState.PeerCertificates[0].VerifyHostname(conf.HttpDomain)
-			},
-		}
-		creds := credentials.NewTLS(tlsConfig)
-		opts = append(opts, grpc.WithTransportCredentials(creds))
-	} else {
-		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	}
-	opts = append(opts, grpc.WithUserAgent(conf.HttpUserAgent))
-
+	opts := internal.GetGlobalGrpcConfig(conf)
 	conn2server, err := grpc.Dial(remoteAddr, opts...)
 	if err != nil {
 		log.Panicf("did not connect: %v", err)
